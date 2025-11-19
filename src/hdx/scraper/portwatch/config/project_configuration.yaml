@@ -1,0 +1,6 @@
+# Collector specific configuration
+base_url: https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services/
+
+tags:
+  - ports
+  - trade
