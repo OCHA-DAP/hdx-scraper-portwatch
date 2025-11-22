@@ -11,6 +11,7 @@ from os.path import expanduser, join
 from hdx.api.configuration import Configuration
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
+from hdx.location.country import Country
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
     script_dir_plus_file,
@@ -27,15 +28,9 @@ _LOOKUP = "hdx-scraper-portwatch"
 _SAVED_DATA_DIR = "saved_data"  # Keep in repo to avoid deletion in /tmp
 _UPDATED_BY_SCRIPT = "HDX Scraper: Portwatch"
 
-# trade_service: Daily_Trade_Data
-# disruptions_service: portwatch_disruptions_database
-# # Daily_Trade_Data/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json
-# # portwatch_disruptions_database/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json
-# query: query?where=1%3D1&outFields=*&outSR=4326&f=json
-
 
 def main(
-    save: bool = False,
+    save: bool = True,
     use_saved: bool = False,
 ) -> None:
     """Generate datasets and create them in HDX
@@ -66,9 +61,13 @@ def main(
             #
             # Steps to generate dataset
             #
-            ports_data = pipeline.get_ports()
-            countries = pipeline.get_port_countries(ports_data)
-            for country_code in countries[:3]:
+            # Get ports data
+            ports_rows, ports_geojson = pipeline.get_ports()
+
+            # Create trade datasets by country
+            countries = pipeline.get_port_countries(ports_rows)
+            for country_code in countries[:1]:
+                country_name = Country.get_country_name_from_iso3(country_code)
                 trade_data = pipeline.get_trade_data(country_code)
                 dataset = pipeline.generate_trade_dataset(country_code, trade_data)
                 if dataset:
@@ -77,6 +76,10 @@ def main(
                             join("config", "hdx_dataset_static.yaml"), main
                         )
                     )
+
+                    dataset["notes"] = configuration["trade_notes"].replace(
+                        "[country]", country_name
+                    )
                     dataset.create_in_hdx(
                         remove_additional_resources=True,
                         match_resource_order=False,
@@ -84,6 +87,47 @@ def main(
                         updated_by_script=_UPDATED_BY_SCRIPT,
                         batch=info["batch"],
                     )
+
+            # Create ports dataset
+            dataset = pipeline.generate_ports_dataset(ports_rows, ports_geojson)
+            if dataset:
+                dataset.update_from_yaml(
+                    script_dir_plus_file(
+                        join("config", "hdx_dataset_static.yaml"), main
+                    )
+                )
+
+                dataset["notes"] = configuration.get("ports_notes", "")
+                dataset.create_in_hdx(
+                    remove_additional_resources=True,
+                    match_resource_order=False,
+                    hxl_update=False,
+                    updated_by_script=_UPDATED_BY_SCRIPT,
+                    batch=info["batch"],
+                )
+
+            # Create disruptions dataset
+            disruptions_rows, disruptions_geojson = pipeline.get_disruptions()
+            disruptions_dataset = pipeline.generate_disruptions_dataset(
+                disruptions_rows, disruptions_geojson
+            )
+            if disruptions_dataset:
+                disruptions_dataset.update_from_yaml(
+                    script_dir_plus_file(
+                        join("config", "hdx_dataset_static.yaml"), main
+                    )
+                )
+
+                disruptions_dataset["notes"] = configuration.get(
+                    "disruptions_notes", ""
+                )
+                disruptions_dataset.create_in_hdx(
+                    remove_additional_resources=True,
+                    match_resource_order=False,
+                    hxl_update=False,
+                    updated_by_script=_UPDATED_BY_SCRIPT,
+                    batch=info["batch"],
+                )
 
 
 if __name__ == "__main__":

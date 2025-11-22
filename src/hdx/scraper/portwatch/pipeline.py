@@ -1,14 +1,16 @@
 #!/usr/bin/python
 """Portwatch scraper"""
 
+import json
 import logging
-from collections import defaultdict
+import os
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
+from hdx.data.resource import Resource
 from hdx.location.country import Country
 from hdx.utilities.retriever import Retrieve
 from slugify import slugify
@@ -22,9 +24,10 @@ class Pipeline:
         self._retriever = retriever
         self._tempdir = tempdir
 
-    def get_ports(self) -> List:
-        base_url = f"{self._configuration['base_url']}PortWatch_ports_database/FeatureServer/0/query"
-        all_data = []
+    def get_ports(self) -> Tuple:
+        base_url = f"{self._configuration['base_url']}/PortWatch_ports_database/FeatureServer/0/query"
+        ports_rows = []
+        geojson_features = []
         offset = 0
         limit = 1000
 
@@ -33,39 +36,121 @@ class Pipeline:
                 "where": "1=1",
                 "outFields": "*",
                 "outSR": 4326,
-                "f": "json",
+                "f": "geojson",
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
             }
-            data = self._retriever.download_json(base_url, parameters=params)
+            data = self._retriever.download_json(
+                base_url, parameters=params, filename="ports.json"
+            )
 
             features = data.get("features", [])
             if not features:
                 break
 
-            all_data.extend(features)
+            for feature in features:
+                props = feature.get("properties", {}) or {}
+
+                # Create features for geojson
+                feature["properties"] = props
+                geojson_features.append(feature)
+
+                # Create rows for csv
+                ports_rows.append(props)
 
             if len(features) < limit:
                 break
 
             offset += limit
-        return all_data
+
+        ports_geojson = {
+            "type": "FeatureCollection",
+            "features": geojson_features,
+        }
+
+        return ports_rows, ports_geojson
+
+    def generate_ports_dataset(
+        self, ports_rows: List, ports_geojson: Dict
+    ) -> Optional[Dataset]:
+        if not ports_rows:
+            return None
+
+        dataset_title = "Ports"
+        dataset_name = slugify(dataset_title)
+        dataset_tags = self._configuration["tags"]
+
+        # Dataset info
+        dataset = Dataset(
+            {
+                "name": dataset_name,
+                "title": dataset_title,
+            }
+        )
+
+        current_year = datetime.now().year
+        dataset.set_time_period_year_range("2023", current_year)
+        dataset.add_tags(dataset_tags)
+        dataset.add_other_location("world")
+
+        # Create csv resource
+        csv_filename = f"{dataset_name}.csv"
+        csv_resource_data = {
+            "name": csv_filename,
+            "description": (
+                "Global ports in CSV format. See variable descriptions "
+                "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+            ),
+        }
+
+        headers = list(ports_rows[0].keys())
+        dataset.generate_resource_from_iterable(
+            headers=headers,
+            iterable=ports_rows,
+            hxltags={},
+            folder=self._tempdir,
+            filename=csv_filename,
+            resourcedata=csv_resource_data,
+            quickcharts=None,
+        )
+
+        # Create geojson resource
+        geojson_filename = f"{dataset_name}.geojson"
+        geojson_path = os.path.join(self._tempdir, geojson_filename)
+
+        # Create temp file for upload
+        with open(geojson_path, "w", encoding="utf-8") as f:
+            json.dump(ports_geojson, f)
+
+        geojson_resource = Resource(
+            {
+                "name": geojson_filename,
+                "description": (
+                    "Global ports in GEOJSON format. See variable descriptions "
+                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                ),
+                "format": "geojson",
+            }
+        )
+        geojson_resource.set_file_to_upload(geojson_path)
+        dataset.add_update_resource(geojson_resource)
+
+        return dataset
 
     def get_port_countries(self, features) -> List:
         iso3_set = set()
 
         for feature in features:
-            attrs = feature.get("attributes", {})
-            iso3 = attrs.get("ISO3")
+            iso3 = feature.get("ISO3")
             if iso3:
                 iso3_set.add(iso3)
 
         return sorted(iso3_set)
 
-    def get_trade_data(self, iso3: str) -> Dict:
+    def get_trade_data(self, iso3: str) -> List:
         base_url = (
-            f"{self._configuration['base_url']}Daily_Trade_Data/FeatureServer/0/query"
+            f"{self._configuration['base_url']}/Daily_Trade_Data/FeatureServer/0/query"
         )
         all_data = []
         offset = 0
@@ -73,7 +158,7 @@ class Pipeline:
 
         while True:
             params = {
-                "where": f"ISO3='{iso3}'",  # "1=1",
+                "where": f"ISO3='{iso3}'",
                 "outFields": "*",
                 "outSR": 4326,
                 "f": "json",
@@ -81,7 +166,9 @@ class Pipeline:
                 "resultOffset": offset,
                 "resultRecordCount": limit,
             }
-            data = self._retriever.download_json(base_url, parameters=params)
+            data = self._retriever.download_json(
+                base_url, parameters=params, filename="trade.json"
+            )
 
             features = data.get("features", [])
             if not features:
@@ -101,21 +188,12 @@ class Pipeline:
             row.pop("ObjectId", None)
 
         all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
-
-        # Group by year (use the 'year' field from the service)
-        data_by_year = defaultdict(list)
-        for row in all_data:
-            year = row.get("year")
-            if year is None:
-                continue
-            data_by_year[year].append(row)
-
-        return data_by_year
+        return all_data
 
     def generate_trade_dataset(
-        self, country_code: str, data_by_year: Dict
+        self, country_code: str, data_by_country: List
     ) -> Optional[Dataset]:
-        if not data_by_year:
+        if not data_by_country:
             logger.warning(
                 f"No trade data for country {country_code}, skipping dataset creation"
             )
@@ -126,13 +204,8 @@ class Pipeline:
         dataset_name = slugify(dataset_title)
         dataset_tags = self._configuration["tags"]
 
-        # Flatten all rows to compute global min/max date
-        all_rows = []
-        for rows in data_by_year.values():
-            all_rows.extend(rows)
-
         # Get date range
-        min_date, max_date = self.get_date_range(all_rows)
+        min_date, max_date = self.get_date_range(data_by_country)
 
         # Dataset info
         dataset = Dataset(
@@ -151,42 +224,108 @@ class Pipeline:
             logger.error(f"Couldn't find country {country_code}, skipping")
             return
 
-        # Create one resource per year
-        for year, rows in sorted(data_by_year.items(), reverse=True):
-            if not rows:
-                continue
+        # Create one resource per country
+        resource_name = f"{dataset_name}.csv"
+        resource_data = {
+            "name": resource_name,
+            "description": (
+                f"Daily port activity and preliminary trade volume estimates "
+                f"for {country_name}. See variable descriptions [here](https://portwatch.imf.org/datasets/959214444157458aad969389b3ebe1a0_0/about)"
+            ),
+        }
 
-            resource_name = f"{dataset_name}-{year}.csv"
-            resource_data = {
-                "name": resource_name,
-                "description": (
-                    f"Daily port activity and preliminary trade volume estimates "
-                    f"for {country_name} in {year}."
-                ),
-            }
-
-            # Get headers
-            headers = list(rows[0].keys())
-
-            dataset.generate_resource_from_iterable(
-                headers=headers,
-                iterable=rows,
-                hxltags={},
-                folder=self._tempdir,
-                filename=resource_name,
-                resourcedata=resource_data,
-                quickcharts=None,
-            )
+        # Get headers
+        headers = list(data_by_country[0].keys())
+        dataset.generate_resource_from_iterable(
+            headers=headers,
+            iterable=data_by_country,
+            hxltags={},
+            folder=self._tempdir,
+            filename=resource_name,
+            resourcedata=resource_data,
+            quickcharts=None,
+        )
 
         return dataset
 
-    def generate_dataset(self) -> Optional[Dataset]:
-        # To be generated
-        dataset_name = None
-        dataset_title = None
-        dataset_time_period = None
-        dataset_tags = None
-        dataset_country_iso3 = None
+    def get_disruptions(self) -> Tuple:
+        base_url = f"{self._configuration['base_url']}/portwatch_disruptions_database/FeatureServer/0/query"
+        disruptions_rows = []
+        geojson_features = []
+        offset = 0
+        limit = 1000
+
+        while True:
+            params = {
+                "where": "1=1",
+                "outFields": "*",
+                "outSR": 4326,
+                "f": "geojson",
+                "orderByFields": "OBJECTID",
+                "resultOffset": offset,
+                "resultRecordCount": limit,
+            }
+            data = self._retriever.download_json(
+                base_url, parameters=params, filename="disruptions.json"
+            )
+
+            features = data.get("features", [])
+            if not features:
+                break
+
+            for feature in features:
+                props = feature.get("properties", {}) or {}
+
+                # Create features for geojson
+                feature["properties"] = props
+                geojson_features.append(feature)
+
+                # Create rows for csv
+                disruptions_rows.append(props)
+
+            if len(features) < limit:
+                break
+
+            offset += limit
+
+        disruptions_geojson = {
+            "type": "FeatureCollection",
+            "features": geojson_features,
+        }
+
+        return disruptions_rows, disruptions_geojson
+
+    def generate_disruptions_dataset(
+        self, disruptions_rows: List, disruptions_geojson: Dict
+    ) -> Optional[Dataset]:
+        if not disruptions_rows:
+            return None
+
+        dataset_title = "Disruptions"
+        dataset_name = slugify(dataset_title)
+        dataset_tags = self._configuration["tags"]
+
+        # Create temp file for upload
+        geojson_filename = f"{dataset_name}.geojson"
+        geojson_path = os.path.join(self._tempdir, geojson_filename)
+        with open(geojson_path, "w", encoding="utf-8") as f:
+            json.dump(disruptions_geojson, f)
+
+        # Format date rows
+        for row in disruptions_rows:
+            row["fromdate"] = datetime.fromtimestamp(
+                row["fromdate"] / 1000, tz=timezone.utc
+            )
+            if row.get("todate") is None:
+                row["todate"] = row["fromdate"]
+            else:
+                row["todate"] = datetime.fromtimestamp(
+                    row["todate"] / 1000, tz=timezone.utc
+                )
+            row.pop("ObjectId", None)
+
+        # Get date range
+        min_date, max_date = self.get_date_range(disruptions_rows)
 
         # Dataset info
         dataset = Dataset(
@@ -196,32 +335,64 @@ class Pipeline:
             }
         )
 
-        dataset.set_time_period(dataset_time_period)
+        dataset.set_time_period(min_date, max_date)
         dataset.add_tags(dataset_tags)
-        # Only if needed
-        dataset.set_subnational(True)
-        try:
-            dataset.add_country_location(dataset_country_iso3)
-        except HDXError:
-            logger.error(f"Couldn't find country {dataset_country_iso3}, skipping")
-            return
+        dataset.add_other_location("world")
 
-        # Add resources here
+        # Create csv resource
+        csv_filename = f"{dataset_name}.csv"
+        csv_resource_data = {
+            "name": csv_filename,
+            "description": (
+                "Dataset identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
+                "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)"
+            ),
+        }
+
+        headers = list(disruptions_rows[0].keys())
+        dataset.generate_resource_from_iterable(
+            headers=headers,
+            iterable=disruptions_rows,
+            hxltags={},
+            folder=self._tempdir,
+            filename=csv_filename,
+            resourcedata=csv_resource_data,
+            quickcharts=None,
+        )
+
+        # Create geojson resource
+        geojson_resource = Resource(
+            {
+                "name": geojson_filename,
+                "description": (
+                    "Dataset in GEOJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
+                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                ),
+                "format": "geojson",
+            }
+        )
+        geojson_resource.set_file_to_upload(geojson_path)
+        dataset.add_update_resource(geojson_resource)
 
         return dataset
 
     def get_date_range(self, data):
-        dates = []
+        from_dates = []
+        to_dates = []
 
         for row in data:
-            d = row.get("date")
+            if "fromdate" in row and "todate" in row:
+                if row.get("fromdate") is not None:
+                    from_dates.append(row["fromdate"])
+                if row.get("todate") is not None:
+                    to_dates.append(row["todate"])
+            else:
+                d = row.get("date")
+                if d is not None:
+                    from_dates.append(d)
+                    to_dates.append(d)
 
-            if d is None:
-                continue
-
-            dates.append(d)
-
-        if not dates:
+        if not from_dates or not to_dates:
             return None, None
 
-        return min(dates), max(dates)
+        return min(from_dates), max(to_dates)

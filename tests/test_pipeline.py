@@ -1,5 +1,6 @@
 from os.path import join
 
+from hdx.utilities.compare import assert_files_same
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
@@ -24,7 +25,189 @@ class TestPipeline:
                     use_saved=True,
                 )
                 pipeline = Pipeline(configuration, retriever, tempdir)
-                dataset = pipeline.generate_dataset()
-                dataset.update_from_yaml(
+
+                # Test ports dataset
+                ports_rows, ports_geojson = pipeline.get_ports()
+                ports_dataset = pipeline.generate_ports_dataset(
+                    ports_rows, ports_geojson
+                )
+                ports_dataset.update_from_yaml(
                     path=join(config_dir, "hdx_dataset_static.yaml")
                 )
+
+                assert ports_dataset == {
+                    "name": "ports",
+                    "title": "Ports",
+                    "dataset_date": "[2023-01-01T00:00:00 TO 2025-12-31T23:59:59]",
+                    "tags": [
+                        {
+                            "name": "ports",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "trade",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                    ],
+                    "license_id": "Other",
+                    "methodology": "Other",
+                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "dataset_source": "PortWatch",
+                    "groups": [{"name": "world"}],
+                    "package_creator": "HDX Data Systems Team",
+                    "private": False,
+                    "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
+                    "notes": "Daily count of port calls, estimates of import volumes and export "
+                    "volumes (in metric tons) for ports in [country].",
+                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "data_update_frequency": 7,
+                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
+                }
+
+                ports_resources = ports_dataset.get_resources()
+                assert ports_resources == [
+                    {
+                        "name": "ports.csv",
+                        "description": (
+                            "Global ports in CSV format. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                        ),
+                        "format": "csv",
+                    },
+                    {
+                        "name": "ports.geojson",
+                        "description": (
+                            "Global ports in GEOJSON format. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                        ),
+                        "format": "geojson",
+                    },
+                ]
+
+                for resource in ports_resources:
+                    filename = resource["name"]
+                    actual = join(tempdir, filename)
+                    expected = join(input_dir, filename)
+                    assert_files_same(actual, expected)
+
+                # Test Disruptions dataset
+                disruptions_rows, disruptions_geojson = pipeline.get_disruptions()
+                disruptions_dataset = pipeline.generate_disruptions_dataset(
+                    disruptions_rows, disruptions_geojson
+                )
+                disruptions_dataset.update_from_yaml(
+                    path=join(config_dir, "hdx_dataset_static.yaml")
+                )
+
+                assert disruptions_dataset == {
+                    "name": "disruptions",
+                    "title": "Disruptions",
+                    "dataset_date": "[2018-10-21T00:00:00 TO 2025-11-11T23:59:59]",
+                    "tags": [
+                        {
+                            "name": "ports",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "trade",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                    ],
+                    "license_id": "Other",
+                    "methodology": "Other",
+                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "dataset_source": "PortWatch",
+                    "groups": [{"name": "world"}],
+                    "package_creator": "HDX Data Systems Team",
+                    "private": False,
+                    "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
+                    "notes": "Daily count of port calls, estimates of import volumes and export "
+                    "volumes (in metric tons) for ports in [country].",
+                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "data_update_frequency": 7,
+                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
+                }
+
+                disruptions_resources = disruptions_dataset.get_resources()
+                assert disruptions_resources == [
+                    {
+                        "name": "disruptions.csv",
+                        "description": (
+                            "Dataset identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)"
+                        ),
+                        "format": "csv",
+                    },
+                    {
+                        "name": "disruptions.geojson",
+                        "description": (
+                            "Dataset in GEOJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                        ),
+                        "format": "geojson",
+                    },
+                ]
+
+                for resource in disruptions_resources:
+                    filename = resource["name"]
+                    actual = join(tempdir, filename)
+                    expected = join(input_dir, filename)
+                    assert_files_same(actual, expected)
+
+                # Test Trade dataset
+                country_code = "ABW"
+                trade_data = pipeline.get_trade_data(country_code)
+                trade_dataset = pipeline.generate_trade_dataset(
+                    country_code, trade_data
+                )
+                trade_dataset.update_from_yaml(
+                    path=join(config_dir, "hdx_dataset_static.yaml")
+                )
+
+                assert trade_dataset == {
+                    "name": "aruba-daily-port-activity-data-and-trade-estimates",
+                    "title": "Aruba: Daily Port Activity Data and Trade Estimates",
+                    "dataset_date": "[2025-09-16T00:00:00 TO 2025-10-05T23:59:59]",
+                    "tags": [
+                        {
+                            "name": "ports",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "trade",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                    ],
+                    "license_id": "Other",
+                    "methodology": "Other",
+                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "dataset_source": "PortWatch",
+                    "groups": [{"name": "abw"}],
+                    "package_creator": "HDX Data Systems Team",
+                    "private": False,
+                    "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
+                    "notes": "Daily count of port calls, estimates of import volumes and export "
+                    "volumes (in metric tons) for ports in [country].",
+                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "data_update_frequency": 7,
+                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
+                }
+
+                trade_resources = trade_dataset.get_resources()
+                assert trade_resources == [
+                    {
+                        "description": (
+                            "Daily port activity and preliminary trade volume estimates "
+                            "for Aruba. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/959214444157458aad969389b3ebe1a0_0/about)"
+                        ),
+                        "format": "csv",
+                        "name": "aruba-daily-port-activity-data-and-trade-estimates.csv",
+                    }
+                ]
+
+                for resource in trade_resources:
+                    filename = resource["name"]
+                    actual = join(tempdir, filename)
+                    expected = join(input_dir, filename)
+                    assert_files_same(actual, expected)
