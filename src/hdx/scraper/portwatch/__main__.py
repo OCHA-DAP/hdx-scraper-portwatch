@@ -11,7 +11,6 @@ from os.path import expanduser, join
 from hdx.api.configuration import Configuration
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
-from hdx.location.country import Country
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
     script_dir_plus_file,
@@ -65,28 +64,28 @@ def main(
             ports_rows, ports_geojson = pipeline.get_ports()
 
             # Create trade datasets by country
-            countries = pipeline.get_port_countries(ports_rows)
-            for country_code in countries:
-                country_name = Country.get_country_name_from_iso3(country_code)
-                trade_data = pipeline.get_trade_data(country_code)
-                dataset = pipeline.generate_trade_dataset(country_code, trade_data)
-                if dataset:
-                    dataset.update_from_yaml(
-                        script_dir_plus_file(
-                            join("config", "hdx_dataset_static.yaml"), main
-                        )
-                    )
-
-                    dataset["notes"] = configuration["trade_notes"].replace(
-                        "[country]", country_name
-                    )
-                    dataset.create_in_hdx(
-                        remove_additional_resources=True,
-                        match_resource_order=False,
-                        hxl_update=False,
-                        updated_by_script=_UPDATED_BY_SCRIPT,
-                        batch=info["batch"],
-                    )
+            # countries = pipeline.get_port_countries(ports_rows)
+            # for country_code in countries:
+            #     country_name = Country.get_country_name_from_iso3(country_code)
+            #     trade_data = pipeline.get_trade_data(country_code)
+            #     dataset = pipeline.generate_trade_dataset(country_code, trade_data)
+            #     if dataset:
+            #         dataset.update_from_yaml(
+            #             script_dir_plus_file(
+            #                 join("config", "hdx_dataset_static.yaml"), main
+            #             )
+            #         )
+            #
+            #         dataset["notes"] = configuration["trade_notes"].replace(
+            #             "[country]", country_name
+            #         )
+            #         dataset.create_in_hdx(
+            #             remove_additional_resources=True,
+            #             match_resource_order=False,
+            #             hxl_update=False,
+            #             updated_by_script=_UPDATED_BY_SCRIPT,
+            #             batch=info["batch"],
+            #         )
 
             # Create ports dataset
             dataset = pipeline.generate_ports_dataset(ports_rows, ports_geojson)
@@ -98,6 +97,52 @@ def main(
                 )
 
                 dataset["notes"] = configuration.get("ports_notes", "")
+                dataset.create_in_hdx(
+                    remove_additional_resources=True,
+                    match_resource_order=False,
+                    hxl_update=False,
+                    updated_by_script=_UPDATED_BY_SCRIPT,
+                    batch=info["batch"],
+                )
+
+            # Get chokepoints data
+            chokepoints_rows, chokepoints_geojson = pipeline.get_chokepoints()
+
+            # Create chokepoints dataset
+            dataset = pipeline.generate_chokepoints_dataset(
+                chokepoints_rows, chokepoints_geojson
+            )
+            if dataset:
+                dataset.update_from_yaml(
+                    script_dir_plus_file(
+                        join("config", "hdx_dataset_static.yaml"), main
+                    )
+                )
+
+                dataset["notes"] = configuration.get("chokepoints_notes", "")
+                dataset.create_in_hdx(
+                    remove_additional_resources=True,
+                    match_resource_order=False,
+                    hxl_update=False,
+                    updated_by_script=_UPDATED_BY_SCRIPT,
+                    batch=info["batch"],
+                )
+
+            # Get daily chokepoints data
+            daily_chokepoints_rows = pipeline.get_daily_chokepoints()
+
+            # Create daily chokepoints dataset
+            dataset = pipeline.generate_daily_chokepoints_dataset(
+                daily_chokepoints_rows
+            )
+            if dataset:
+                dataset.update_from_yaml(
+                    script_dir_plus_file(
+                        join("config", "hdx_dataset_static.yaml"), main
+                    )
+                )
+
+                dataset["notes"] = configuration.get("daily_chokepoints_notes", "")
                 dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,

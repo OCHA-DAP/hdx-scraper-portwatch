@@ -4,7 +4,12 @@ base_url: https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services
 trade_notes: Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].
 
 ports_notes: |
-  The PortWatch ports database includes 1,854 ports globally along with other associated information. Click [here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about) for a description of the additional information.
+  The PortWatch ports database includes 1,854 ports globally along with other [associated information](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about).
+
+chokepoints_notes: |
+  The PortWatch chokepoints database includes 28 major global chokepoints along with other [associated information](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about).
+
+daily_chokepoints_notes: Daily transit calls and estimates of transit trade volumes (in metric tons) for 28 chokepoints around the world.
 
 disruptions_notes: |
   The Global Disaster Alert and Coordination System (GDACS) service is used to collect information on natural disasters, including earthquakes, tsunamis, tropical cyclones, floods, volcanic eruptions, and droughts, as well as other types of disruptions such as those arising from geopolitical tensions. Disaster areas are then intersected with the ports and chokepoints databases to identify locations at risk of being disrupted.

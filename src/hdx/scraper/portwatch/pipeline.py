@@ -148,6 +148,208 @@ class Pipeline:
 
         return sorted(iso3_set)
 
+    def get_chokepoints(self) -> Tuple:
+        base_url = f"{self._configuration['base_url']}/PortWatch_chokepoints_database/FeatureServer/0/query"
+        chokepoints_rows = []
+        geojson_features = []
+        offset = 0
+        limit = 1000
+
+        while True:
+            params = {
+                "where": "1=1",
+                "outFields": "*",
+                "outSR": 4326,
+                "f": "geojson",
+                "orderByFields": "OBJECTID",
+                "resultOffset": offset,
+                "resultRecordCount": limit,
+            }
+            data = self._retriever.download_json(
+                base_url, parameters=params, filename="chokepoints.json"
+            )
+
+            features = data.get("features", [])
+            if not features:
+                break
+
+            for feature in features:
+                props = feature.get("properties", {}) or {}
+
+                # Create features for geojson
+                feature["properties"] = props
+                geojson_features.append(feature)
+
+                # Create rows for csv
+                chokepoints_rows.append(props)
+
+            if len(features) < limit:
+                break
+
+            offset += limit
+
+        chokepoints_geojson = {
+            "type": "FeatureCollection",
+            "features": geojson_features,
+        }
+
+        return chokepoints_rows, chokepoints_geojson
+
+    def generate_chokepoints_dataset(
+        self, chokepoints_rows: List, chokepoints_geojson: Dict
+    ) -> Optional[Dataset]:
+        if not chokepoints_rows:
+            return None
+
+        dataset_title = "Chokepoints"
+        dataset_name = slugify(dataset_title)
+        dataset_tags = self._configuration["tags"]
+
+        # Dataset info
+        dataset = Dataset(
+            {
+                "name": dataset_name,
+                "title": dataset_title,
+            }
+        )
+
+        current_year = datetime.now().year
+        dataset.set_time_period_year_range("2018", current_year)
+        dataset.add_tags(dataset_tags)
+        dataset.add_other_location("world")
+
+        # Create csv resource
+        csv_filename = f"{dataset_name}.csv"
+        csv_resource_data = {
+            "name": csv_filename,
+            "description": (
+                "Global chokepoints in CSV format. See variable descriptions "
+                "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+            ),
+        }
+
+        headers = list(chokepoints_rows[0].keys())
+        dataset.generate_resource_from_iterable(
+            headers=headers,
+            iterable=chokepoints_rows,
+            hxltags={},
+            folder=self._tempdir,
+            filename=csv_filename,
+            resourcedata=csv_resource_data,
+            quickcharts=None,
+        )
+
+        # Create geojson resource
+        geojson_filename = f"{dataset_name}.geojson"
+        geojson_path = os.path.join(self._tempdir, geojson_filename)
+
+        # Create temp file for upload
+        with open(geojson_path, "w", encoding="utf-8") as f:
+            json.dump(chokepoints_geojson, f)
+
+        geojson_resource = Resource(
+            {
+                "name": geojson_filename,
+                "description": (
+                    "Global chokepoints in GEOJSON format. See variable descriptions "
+                    "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                ),
+                "format": "geojson",
+            }
+        )
+        geojson_resource.set_file_to_upload(geojson_path)
+        dataset.add_update_resource(geojson_resource)
+
+        return dataset
+
+    def get_daily_chokepoints(self) -> List:
+        base_url = f"{self._configuration['base_url']}/Daily_Chokepoints_Data/FeatureServer/0/query"
+        all_data = []
+        offset = 0
+        limit = 1000
+
+        while True:
+            params = {
+                "where": "1=1",
+                "outFields": "*",
+                "outSR": 4326,
+                "f": "json",
+                "orderByFields": "OBJECTID",
+                "resultOffset": offset,
+                "resultRecordCount": limit,
+            }
+            data = self._retriever.download_json(
+                base_url, parameters=params, filename="daily_chokepoints.json"
+            )
+
+            features = data.get("features", [])
+            if not features:
+                break
+
+            for feature in features:
+                attrs = feature.get("attributes", {})
+                all_data.append(attrs)
+
+            if len(features) < limit:
+                break
+
+            offset += limit
+
+        for row in all_data:
+            row["date"] = datetime.fromtimestamp(row["date"] / 1000, tz=timezone.utc)
+            row.pop("ObjectId", None)
+
+        all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
+        return all_data
+
+    def generate_daily_chokepoints_dataset(
+        self, daily_chokepoints_rows: List
+    ) -> Optional[Dataset]:
+        if not daily_chokepoints_rows:
+            return None
+
+        dataset_title = "Daily Chokepoint Transit Calls and Trade Volume Estimates"
+        dataset_name = slugify(dataset_title)
+        dataset_tags = self._configuration["tags"]
+
+        # Get date range
+        min_date, max_date = self.get_date_range(daily_chokepoints_rows)
+
+        # Dataset info
+        dataset = Dataset(
+            {
+                "name": dataset_name,
+                "title": dataset_title,
+            }
+        )
+
+        dataset.set_time_period(min_date, max_date)
+        dataset.add_tags(dataset_tags)
+        dataset.add_other_location("world")
+
+        # Create csv resource
+        csv_filename = f"{dataset_name}.csv"
+        csv_resource_data = {
+            "name": csv_filename,
+            "description": (
+                "Daily chokepoint transit calls and preliminary transit trade volume estimates for 28 major chokepoints worldwide. See variable descriptions "
+                "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)"
+            ),
+        }
+
+        headers = list(daily_chokepoints_rows[0].keys())
+        dataset.generate_resource_from_iterable(
+            headers=headers,
+            iterable=daily_chokepoints_rows,
+            hxltags={},
+            folder=self._tempdir,
+            filename=csv_filename,
+            resourcedata=csv_resource_data,
+            quickcharts=None,
+        )
+
+        return dataset
+
     def get_trade_data(self, iso3: str) -> List:
         base_url = (
             f"{self._configuration['base_url']}/Daily_Trade_Data/FeatureServer/0/query"

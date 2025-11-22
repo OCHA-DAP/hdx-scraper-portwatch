@@ -90,6 +90,126 @@ class TestPipeline:
                     expected = join(input_dir, filename)
                     assert_files_same(actual, expected)
 
+                # Test chokepoints dataset
+                chokepoints_rows, chokepoints_geojson = pipeline.get_chokepoints()
+                chokepoints_dataset = pipeline.generate_chokepoints_dataset(
+                    chokepoints_rows, chokepoints_geojson
+                )
+                chokepoints_dataset.update_from_yaml(
+                    path=join(config_dir, "hdx_dataset_static.yaml")
+                )
+
+                assert chokepoints_dataset == {
+                    "name": "chokepoints",
+                    "title": "Chokepoints",
+                    "dataset_date": "[2018-01-01T00:00:00 TO 2025-12-31T23:59:59]",
+                    "tags": [
+                        {
+                            "name": "ports",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "trade",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                    ],
+                    "license_id": "Other",
+                    "methodology": "Other",
+                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "dataset_source": "PortWatch",
+                    "groups": [{"name": "world"}],
+                    "package_creator": "HDX Data Systems Team",
+                    "private": False,
+                    "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
+                    "notes": "Daily count of port calls, estimates of import volumes and export "
+                    "volumes (in metric tons) for ports in [country].",
+                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "data_update_frequency": 7,
+                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
+                }
+
+                chokepoints_resources = chokepoints_dataset.get_resources()
+                assert chokepoints_resources == [
+                    {
+                        "name": "chokepoints.csv",
+                        "description": (
+                            "Global chokepoints in CSV format. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                        ),
+                        "format": "csv",
+                    },
+                    {
+                        "name": "chokepoints.geojson",
+                        "description": (
+                            "Global chokepoints in GEOJSON format. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                        ),
+                        "format": "geojson",
+                    },
+                ]
+
+                for resource in ports_resources:
+                    filename = resource["name"]
+                    actual = join(tempdir, filename)
+                    expected = join(input_dir, filename)
+                    assert_files_same(actual, expected)
+
+                # Test daily chokepoints dataset
+                daily_chokepoints_rows = pipeline.get_daily_chokepoints()
+                daily_chokepoints_dataset = pipeline.generate_daily_chokepoints_dataset(
+                    daily_chokepoints_rows
+                )
+                daily_chokepoints_dataset.update_from_yaml(
+                    path=join(config_dir, "hdx_dataset_static.yaml")
+                )
+
+                assert daily_chokepoints_dataset == {
+                    "name": "daily-chokepoint-transit-calls-and-trade-volume-estimates",
+                    "title": "Daily Chokepoint Transit Calls and Trade Volume Estimates",
+                    "dataset_date": "[2024-12-16T00:00:00 TO 2025-11-16T23:59:59]",
+                    "tags": [
+                        {
+                            "name": "ports",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "trade",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                    ],
+                    "license_id": "Other",
+                    "methodology": "Other",
+                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "dataset_source": "PortWatch",
+                    "groups": [{"name": "world"}],
+                    "package_creator": "HDX Data Systems Team",
+                    "private": False,
+                    "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
+                    "notes": "Daily count of port calls, estimates of import volumes and export "
+                    "volumes (in metric tons) for ports in [country].",
+                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "data_update_frequency": 7,
+                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
+                }
+
+                daily_chokepoints_resources = daily_chokepoints_dataset.get_resources()
+                assert daily_chokepoints_resources == [
+                    {
+                        "name": "daily-chokepoint-transit-calls-and-trade-volume-estimates.csv",
+                        "description": (
+                            "Daily chokepoint transit calls and preliminary transit trade volume estimates for 28 major chokepoints worldwide. See variable descriptions "
+                            "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)"
+                        ),
+                        "format": "csv",
+                    },
+                ]
+
+                for resource in daily_chokepoints_resources:
+                    filename = resource["name"]
+                    actual = join(tempdir, filename)
+                    expected = join(input_dir, filename)
+                    assert_files_same(actual, expected)
+
                 # Test Disruptions dataset
                 disruptions_rows, disruptions_geojson = pipeline.get_disruptions()
                 disruptions_dataset = pipeline.generate_disruptions_dataset(
