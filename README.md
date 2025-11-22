@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-scraper-portwatch/badge.svg?branch=main&ts=1)](https://coveralls.io/github/OCHA-DAP/hdx-scraper-portwatch?branch=main)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-This script ...
+This retrieves data from the PortWatch API, including Daily Port Activity and Trade Estimates, Ports, and Disruptions. It downloads all Ports and Disruptions records and publishes both CSV and GeoJSON outputs to HDX. It also queries Daily Port Activity by country and generates one CSV file per country. The scraper is scheduled to run every Tuesday.
 
 ## Development
 

@@ -30,7 +30,7 @@ _UPDATED_BY_SCRIPT = "HDX Scraper: Portwatch"
 
 
 def main(
-    save: bool = True,
+    save: bool = False,
     use_saved: bool = False,
 ) -> None:
     """Generate datasets and create them in HDX
