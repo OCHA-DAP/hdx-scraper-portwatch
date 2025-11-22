@@ -66,7 +66,7 @@ def main(
 
             # Create trade datasets by country
             countries = pipeline.get_port_countries(ports_rows)
-            for country_code in countries[:1]:
+            for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
                 trade_data = pipeline.get_trade_data(country_code)
                 dataset = pipeline.generate_trade_dataset(country_code, trade_data)
@@ -133,7 +133,7 @@ def main(
 if __name__ == "__main__":
     facade(
         main,
-        hdx_site="demo",
+        # hdx_site="demo",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=_LOOKUP,
         project_config_yaml=script_dir_plus_file(
