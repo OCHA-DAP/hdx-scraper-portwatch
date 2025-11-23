@@ -44,6 +44,10 @@ def configuration(config_dir):
             {"name": tag}
             # Change tags below to match those needed in tests
             for tag in (
+                "cyclones-hurricanes-typhoons",
+                "earthquake-tsunami",
+                "flooding",
+                "natural disasters",
                 "ports",
                 "trade",
             )

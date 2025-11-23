@@ -51,6 +51,7 @@ class Pipeline:
 
             for feature in features:
                 props = feature.get("properties", {}) or {}
+                props.pop("ObjectId", None)
 
                 # Create features for geojson
                 feature["properties"] = props
@@ -127,7 +128,7 @@ class Pipeline:
             {
                 "name": geojson_filename,
                 "description": (
-                    "Global ports in GEOJSON format. See variable descriptions "
+                    "Global ports in GeoJSON format. See variable descriptions "
                     "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
                 ),
                 "format": "geojson",
@@ -175,6 +176,7 @@ class Pipeline:
 
             for feature in features:
                 props = feature.get("properties", {}) or {}
+                props.pop("ObjectId", None)
 
                 # Create features for geojson
                 feature["properties"] = props
@@ -251,7 +253,7 @@ class Pipeline:
             {
                 "name": geojson_filename,
                 "description": (
-                    "Global chokepoints in GEOJSON format. See variable descriptions "
+                    "Global chokepoints in GeoJSON format. See variable descriptions "
                     "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
                 ),
                 "format": "geojson",
@@ -505,7 +507,7 @@ class Pipeline:
 
         dataset_title = "Disruptions"
         dataset_name = slugify(dataset_title)
-        dataset_tags = self._configuration["tags"]
+        dataset_tags = self._configuration["disruptions_tags"]
 
         # Create temp file for upload
         geojson_filename = f"{dataset_name}.geojson"
@@ -567,7 +569,7 @@ class Pipeline:
             {
                 "name": geojson_filename,
                 "description": (
-                    "Dataset in GEOJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
+                    "Dataset in GeoJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
                     "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
                 ),
                 "format": "geojson",

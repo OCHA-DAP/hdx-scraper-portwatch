@@ -6,11 +6,8 @@
 This scraper retrieves multiple datasets from the PortWatch API and publishes them to HDX. It collects:
 
 * Ports data: published as global CSV and GeoJSON resources
-
 * Disruptions data: published as a global CSV and GeoJSON resource
-
 * Chokepoints data, Daily Chokepoint Transit Calls and Trade Volume Estimates data: each published as a global CSV resource
-
 * Daily Port Activity Data and Trade Estimates data: retrieved at the country level, published as one CSV file per country
 
 The scraper runs every Tuesday, shortly after the PortWatch API completes its weekly data update.

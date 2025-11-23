@@ -77,7 +77,7 @@ class TestPipeline:
                     {
                         "name": "ports.geojson",
                         "description": (
-                            "Global ports in GEOJSON format. See variable descriptions "
+                            "Global ports in GeoJSON format. See variable descriptions "
                             "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
                         ),
                         "format": "geojson",
@@ -141,7 +141,7 @@ class TestPipeline:
                     {
                         "name": "chokepoints.geojson",
                         "description": (
-                            "Global chokepoints in GEOJSON format. See variable descriptions "
+                            "Global chokepoints in GeoJSON format. See variable descriptions "
                             "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
                         ),
                         "format": "geojson",
@@ -225,6 +225,22 @@ class TestPipeline:
                     "dataset_date": "[2018-10-21T00:00:00 TO 2025-11-11T23:59:59]",
                     "tags": [
                         {
+                            "name": "cyclones-hurricanes-typhoons",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "earthquake-tsunami",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "flooding",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
+                            "name": "natural disasters",
+                            "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
+                        },
+                        {
                             "name": "ports",
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
@@ -261,7 +277,7 @@ class TestPipeline:
                     {
                         "name": "disruptions.geojson",
                         "description": (
-                            "Dataset in GEOJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
+                            "Dataset in GeoJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
                             "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
                         ),
                         "format": "geojson",

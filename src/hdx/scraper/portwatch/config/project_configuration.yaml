@@ -12,8 +12,16 @@ chokepoints_notes: |
 daily_chokepoints_notes: Daily transit calls and estimates of transit trade volumes (in metric tons) for 28 chokepoints around the world.
 
 disruptions_notes: |
-  The Global Disaster Alert and Coordination System (GDACS) service is used to collect information on natural disasters, including earthquakes, tsunamis, tropical cyclones, floods, volcanic eruptions, and droughts, as well as other types of disruptions such as those arising from geopolitical tensions. Disaster areas are then intersected with the ports and chokepoints databases to identify locations at risk of being disrupted.
+  The PortWatch Disruptions dataset collects data from the Global Disaster Alert and Coordination System (GDACS), which provides alerts on natural hazards such as earthquakes, tsunamis, tropical cyclones, floods, volcanic eruptions, and droughts, as well as other types of disruptions such as those arising from geopolitical tensions. PortWatch intersects this data with their ports and chokepoints databases to identify locations that may be at risk  of being disrupted.
 
 tags:
+  - ports
+  - trade
+
+disruptions_tags:
+  - cyclones-hurricanes-typhoons
+  - earthquake-tsunami
+  - flooding
+  - natural disasters
   - ports
   - trade
