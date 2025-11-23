@@ -6,6 +6,6 @@ dataset_source: PortWatch
 package_creator: HDX Data Systems Team
 private: False
 maintainer: fdbb8e79-f020-4039-ab3a-9adb482273b8 # erikawei
-owner_org: a6453406-c235-4eb9-9968-75b1caf7615a # portwatch
+owner_org: 22945e84-d492-497f-9ffa-f9c6c394c04f # portwatch
 data_update_frequency: 7
 notes: Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].
