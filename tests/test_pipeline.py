@@ -59,7 +59,7 @@ class TestPipeline:
                     "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
-                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
                     "data_update_frequency": 7,
                     "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
@@ -123,7 +123,7 @@ class TestPipeline:
                     "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
-                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
                     "data_update_frequency": 7,
                     "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
@@ -187,7 +187,7 @@ class TestPipeline:
                     "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
-                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
                     "data_update_frequency": 7,
                     "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
@@ -243,7 +243,7 @@ class TestPipeline:
                     "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
-                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
                     "data_update_frequency": 7,
                     "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
@@ -308,7 +308,7 @@ class TestPipeline:
                     "maintainer": "fdbb8e79-f020-4039-ab3a-9adb482273b8",
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
-                    "owner_org": "a6453406-c235-4eb9-9968-75b1caf7615a",
+                    "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
                     "data_update_frequency": 7,
                     "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
