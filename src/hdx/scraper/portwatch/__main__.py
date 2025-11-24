@@ -61,8 +61,12 @@ def main(
             #
             # Steps to generate dataset
             #
+
             # Get ports data
             ports_rows, ports_geojson = pipeline.get_ports()
+
+            # Get chokepoints data
+            chokepoints_rows, chokepoints_geojson = pipeline.get_chokepoints()
 
             # Create trade datasets by country
             countries = pipeline.get_port_countries(ports_rows)
@@ -88,8 +92,13 @@ def main(
                         batch=info["batch"],
                     )
 
-            # Create ports dataset
-            dataset = pipeline.generate_ports_dataset(ports_rows, ports_geojson)
+            # Get daily chokepoints data
+            daily_chokepoints_rows = pipeline.get_daily_chokepoints()
+
+            # Create daily chokepoints dataset
+            dataset = pipeline.generate_daily_chokepoints_dataset(
+                daily_chokepoints_rows
+            )
             if dataset:
                 dataset.update_from_yaml(
                     script_dir_plus_file(
@@ -97,7 +106,7 @@ def main(
                     )
                 )
 
-                dataset["notes"] = configuration.get("ports_notes", "")
+                dataset["notes"] = configuration.get("daily_chokepoints_notes", "")
                 dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
@@ -105,9 +114,6 @@ def main(
                     updated_by_script=_UPDATED_BY_SCRIPT,
                     batch=info["batch"],
                 )
-
-            # Get chokepoints data
-            chokepoints_rows, chokepoints_geojson = pipeline.get_chokepoints()
 
             # Create chokepoints dataset
             dataset = pipeline.generate_chokepoints_dataset(
@@ -129,13 +135,8 @@ def main(
                     batch=info["batch"],
                 )
 
-            # Get daily chokepoints data
-            daily_chokepoints_rows = pipeline.get_daily_chokepoints()
-
-            # Create daily chokepoints dataset
-            dataset = pipeline.generate_daily_chokepoints_dataset(
-                daily_chokepoints_rows
-            )
+            # Create ports dataset
+            dataset = pipeline.generate_ports_dataset(ports_rows, ports_geojson)
             if dataset:
                 dataset.update_from_yaml(
                     script_dir_plus_file(
@@ -143,7 +144,7 @@ def main(
                     )
                 )
 
-                dataset["notes"] = configuration.get("daily_chokepoints_notes", "")
+                dataset["notes"] = configuration.get("ports_notes", "")
                 dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
