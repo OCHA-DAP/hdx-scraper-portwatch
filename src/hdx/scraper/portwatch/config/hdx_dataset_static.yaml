@@ -1,11 +1,10 @@
-license_id: Other
+license_id: hdx-other
+license_other: https://www.imf.org/en/about/copyright-and-terms
 methodology: Other
 methodology_other: https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345
-caveats: Custom License - https://www.imf.org/en/about/copyright-and-terms
-dataset_source: PortWatch
+dataset_source: UN Global Platform; IMF PortWatch
 package_creator: HDX Data Systems Team
 private: False
 maintainer: fdbb8e79-f020-4039-ab3a-9adb482273b8 # erikawei
 owner_org: 22945e84-d492-497f-9ffa-f9c6c394c04f # portwatch
-data_update_frequency: 7
 notes: Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].

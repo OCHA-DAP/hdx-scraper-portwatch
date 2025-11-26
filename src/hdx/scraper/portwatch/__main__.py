@@ -73,18 +73,23 @@ def main(
             for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
                 trade_data = pipeline.get_trade_data(country_code)
-                dataset = pipeline.generate_trade_dataset(country_code, trade_data)
-                if dataset:
-                    dataset.update_from_yaml(
+                trade_dataset = pipeline.generate_trade_dataset(
+                    country_code, trade_data
+                )
+                if trade_dataset:
+                    trade_dataset.update_from_yaml(
                         script_dir_plus_file(
                             join("config", "hdx_dataset_static.yaml"), main
                         )
                     )
 
-                    dataset["notes"] = configuration["trade_notes"].replace(
+                    trade_dataset["notes"] = configuration["trade_notes"].replace(
                         "[country]", country_name
                     )
-                    dataset.create_in_hdx(
+                    trade_dataset["data_update_frequency"] = configuration[
+                        "update_frequency_default"
+                    ]
+                    trade_dataset.create_in_hdx(
                         remove_additional_resources=True,
                         match_resource_order=False,
                         hxl_update=False,
@@ -96,18 +101,23 @@ def main(
             daily_chokepoints_rows = pipeline.get_daily_chokepoints()
 
             # Create daily chokepoints dataset
-            dataset = pipeline.generate_daily_chokepoints_dataset(
+            daily_chokepoints_dataset = pipeline.generate_daily_chokepoints_dataset(
                 daily_chokepoints_rows
             )
-            if dataset:
-                dataset.update_from_yaml(
+            if daily_chokepoints_dataset:
+                daily_chokepoints_dataset.update_from_yaml(
                     script_dir_plus_file(
                         join("config", "hdx_dataset_static.yaml"), main
                     )
                 )
 
-                dataset["notes"] = configuration.get("daily_chokepoints_notes", "")
-                dataset.create_in_hdx(
+                daily_chokepoints_dataset["notes"] = configuration.get(
+                    "daily_chokepoints_notes", ""
+                )
+                daily_chokepoints_dataset["data_update_frequency"] = configuration[
+                    "update_frequency_default"
+                ]
+                daily_chokepoints_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
                     hxl_update=False,
@@ -116,18 +126,27 @@ def main(
                 )
 
             # Create chokepoints dataset
-            dataset = pipeline.generate_chokepoints_dataset(
+            chokepoints_dataset = pipeline.generate_chokepoints_dataset(
                 chokepoints_rows, chokepoints_geojson
             )
-            if dataset:
-                dataset.update_from_yaml(
+            if chokepoints_dataset:
+                chokepoints_dataset.update_from_yaml(
                     script_dir_plus_file(
                         join("config", "hdx_dataset_static.yaml"), main
                     )
                 )
 
-                dataset["notes"] = configuration.get("chokepoints_notes", "")
-                dataset.create_in_hdx(
+                chokepoints_dataset["notes"] = configuration.get(
+                    "chokepoints_notes", ""
+                )
+                chokepoints_dataset["caveats"] = configuration["caveats_frequency"]
+                chokepoints_dataset["data_update_frequency"] = configuration[
+                    "chokepoints_frequency"
+                ]
+                chokepoints_dataset["methodology_other"] = configuration[
+                    "chokepoints_methodology"
+                ]
+                chokepoints_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
                     hxl_update=False,
@@ -136,16 +155,21 @@ def main(
                 )
 
             # Create ports dataset
-            dataset = pipeline.generate_ports_dataset(ports_rows, ports_geojson)
-            if dataset:
-                dataset.update_from_yaml(
+            ports_dataset = pipeline.generate_ports_dataset(ports_rows, ports_geojson)
+            if ports_dataset:
+                ports_dataset.update_from_yaml(
                     script_dir_plus_file(
                         join("config", "hdx_dataset_static.yaml"), main
                     )
                 )
 
-                dataset["notes"] = configuration.get("ports_notes", "")
-                dataset.create_in_hdx(
+                ports_dataset["notes"] = configuration.get("ports_notes", "")
+                ports_dataset["caveats"] = configuration["caveats_frequency"]
+                ports_dataset["data_update_frequency"] = configuration[
+                    "ports_frequency"
+                ]
+                ports_dataset["methodology_other"] = configuration["ports_methodology"]
+                ports_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
                     hxl_update=False,
@@ -168,6 +192,10 @@ def main(
                 disruptions_dataset["notes"] = configuration.get(
                     "disruptions_notes", ""
                 )
+                disruptions_dataset["caveats"] = configuration["caveats_frequency"]
+                disruptions_dataset["data_update_frequency"] = configuration[
+                    "disruptions_frequency"
+                ]
                 disruptions_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
@@ -180,7 +208,7 @@ def main(
 if __name__ == "__main__":
     facade(
         main,
-        # hdx_site="demo",
+        # hdx_site="stage",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=_LOOKUP,
         project_config_yaml=script_dir_plus_file(

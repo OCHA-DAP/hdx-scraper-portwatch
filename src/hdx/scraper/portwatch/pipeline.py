@@ -90,8 +90,11 @@ class Pipeline:
             }
         )
 
-        current_year = datetime.now().year
-        dataset.set_time_period_year_range("2023", current_year)
+        # Hardcode start date according to info in API metadata
+        min_date = datetime(2023, 8, 29, 4, 8, 45)
+        today = datetime.now()
+        dataset.set_time_period(min_date, today)
+
         dataset.add_tags(dataset_tags)
         dataset.add_other_location("world")
 
@@ -215,8 +218,10 @@ class Pipeline:
             }
         )
 
-        current_year = datetime.now().year
-        dataset.set_time_period_year_range("2018", current_year)
+        min_date = datetime(2023, 9, 8, 6, 0, 2)
+        today = datetime.now()
+        dataset.set_time_period(min_date, today)
+
         dataset.add_tags(dataset_tags)
         dataset.add_other_location("world")
 

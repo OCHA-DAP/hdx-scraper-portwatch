@@ -38,7 +38,7 @@ class TestPipeline:
                 assert ports_dataset == {
                     "name": "ports",
                     "title": "Ports",
-                    "dataset_date": "[2023-01-01T00:00:00 TO 2025-12-31T23:59:59]",
+                    "dataset_date": "[2023-08-29T00:00:00 TO 2025-11-26T23:59:59]",
                     "tags": [
                         {
                             "name": "ports",
@@ -49,10 +49,11 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
-                    "license_id": "Other",
+                    "license_id": "hdx-other",
+                    "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
                     "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
-                    "dataset_source": "PortWatch",
+                    "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
                     "private": False,
@@ -60,8 +61,6 @@ class TestPipeline:
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
                     "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
-                    "data_update_frequency": 7,
-                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
 
                 ports_resources = ports_dataset.get_resources()
@@ -102,7 +101,7 @@ class TestPipeline:
                 assert chokepoints_dataset == {
                     "name": "chokepoints",
                     "title": "Chokepoints",
-                    "dataset_date": "[2018-01-01T00:00:00 TO 2025-12-31T23:59:59]",
+                    "dataset_date": "[2023-09-08T00:00:00 TO 2025-11-26T23:59:59]",
                     "tags": [
                         {
                             "name": "ports",
@@ -113,10 +112,11 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
-                    "license_id": "Other",
+                    "license_id": "hdx-other",
+                    "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
                     "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
-                    "dataset_source": "PortWatch",
+                    "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
                     "private": False,
@@ -124,8 +124,6 @@ class TestPipeline:
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
                     "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
-                    "data_update_frequency": 7,
-                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
 
                 chokepoints_resources = chokepoints_dataset.get_resources()
@@ -177,10 +175,11 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
-                    "license_id": "Other",
+                    "license_id": "hdx-other",
+                    "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
                     "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
-                    "dataset_source": "PortWatch",
+                    "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
                     "private": False,
@@ -188,8 +187,6 @@ class TestPipeline:
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
                     "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
-                    "data_update_frequency": 7,
-                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
 
                 daily_chokepoints_resources = daily_chokepoints_dataset.get_resources()
@@ -249,10 +246,11 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
-                    "license_id": "Other",
+                    "license_id": "hdx-other",
+                    "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
                     "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
-                    "dataset_source": "PortWatch",
+                    "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
                     "private": False,
@@ -260,8 +258,6 @@ class TestPipeline:
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
                     "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
-                    "data_update_frequency": 7,
-                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
 
                 disruptions_resources = disruptions_dataset.get_resources()
@@ -314,10 +310,11 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
-                    "license_id": "Other",
+                    "license_id": "hdx-other",
+                    "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
                     "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
-                    "dataset_source": "PortWatch",
+                    "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "abw"}],
                     "package_creator": "HDX Data Systems Team",
                     "private": False,
@@ -325,8 +322,6 @@ class TestPipeline:
                     "notes": "Daily count of port calls, estimates of import volumes and export "
                     "volumes (in metric tons) for ports in [country].",
                     "owner_org": "22945e84-d492-497f-9ffa-f9c6c394c04f",
-                    "data_update_frequency": 7,
-                    "caveats": "Custom License - https://www.imf.org/en/about/copyright-and-terms",
                 }
 
                 trade_resources = trade_dataset.get_resources()
