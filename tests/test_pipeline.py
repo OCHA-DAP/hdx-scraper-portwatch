@@ -49,10 +49,13 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
+                    "caveats": None,
                     "license_id": "hdx-other",
                     "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
-                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "methodology_other": "[Tracking Trade from Space: An Application to Pacific Island "
+                    "Countries](https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345)\n"
+                    "[Nowcasting Global Trade from Space](https://www.imf.org/en/publications/wp/issues/2025/05/16/nowcasting-global-trade-from-space-566957)\n",
                     "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
@@ -112,10 +115,13 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
+                    "caveats": None,
                     "license_id": "hdx-other",
                     "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
-                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "methodology_other": "[Tracking Trade from Space: An Application to Pacific Island "
+                    "Countries](https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345)\n"
+                    "[Nowcasting Global Trade from Space](https://www.imf.org/en/publications/wp/issues/2025/05/16/nowcasting-global-trade-from-space-566957)\n",
                     "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
@@ -175,10 +181,13 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
+                    "caveats": None,
                     "license_id": "hdx-other",
                     "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
-                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "methodology_other": "[Tracking Trade from Space: An Application to Pacific Island "
+                    "Countries](https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345)\n"
+                    "[Nowcasting Global Trade from Space](https://www.imf.org/en/publications/wp/issues/2025/05/16/nowcasting-global-trade-from-space-566957)\n",
                     "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
@@ -246,10 +255,13 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
+                    "caveats": None,
                     "license_id": "hdx-other",
                     "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
-                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "methodology_other": "[Tracking Trade from Space: An Application to Pacific Island "
+                    "Countries](https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345)\n"
+                    "[Nowcasting Global Trade from Space](https://www.imf.org/en/publications/wp/issues/2025/05/16/nowcasting-global-trade-from-space-566957)\n",
                     "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "world"}],
                     "package_creator": "HDX Data Systems Team",
@@ -310,10 +322,13 @@ class TestPipeline:
                             "vocabulary_id": "b891512e-9516-4bf5-962a-7a289772a2a1",
                         },
                     ],
+                    "caveats": None,
                     "license_id": "hdx-other",
                     "license_other": "https://www.imf.org/en/about/copyright-and-terms",
                     "methodology": "Other",
-                    "methodology_other": "https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345",
+                    "methodology_other": "[Tracking Trade from Space: An Application to Pacific Island "
+                    "Countries](https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345)\n"
+                    "[Nowcasting Global Trade from Space](https://www.imf.org/en/publications/wp/issues/2025/05/16/nowcasting-global-trade-from-space-566957)\n",
                     "dataset_source": "UN Global Platform; IMF PortWatch",
                     "groups": [{"name": "abw"}],
                     "package_creator": "HDX Data Systems Team",

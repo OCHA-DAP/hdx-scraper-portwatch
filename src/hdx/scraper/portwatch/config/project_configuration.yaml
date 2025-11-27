@@ -19,7 +19,7 @@ daily_chokepoints_notes: |
   Daily transit calls and estimates of transit trade volumes (in metric tons) for 28 chokepoints around the world.
 
 disruptions_notes: |
-  The PortWatch Disruptions dataset collects data from the Global Disaster Alert and Coordination System (GDACS), which provides alerts on natural hazards such as earthquakes, tsunamis, tropical cyclones, floods, volcanic eruptions, and droughts, as well as other types of disruptions such as those arising from geopolitical tensions. PortWatch intersects this data with their ports and chokepoints databases to identify locations that may be at risk  of being disrupted.
+  The PortWatch Disruptions dataset collects data from the Global Disaster Alert and Coordination System ([GDACS](https://www.gdacs.org/)), which provides alerts on natural hazards such as earthquakes, tsunamis, tropical cyclones, floods, volcanic eruptions, and droughts, as well as other types of disruptions such as those arising from geopolitical tensions. PortWatch intersects this data with their ports and chokepoints databases to identify locations that may be at risk  of being disrupted.
 disruptions_frequency: -2
 
 caveats_frequency: The API is queried every Tuesday. If new data is available, the dataset is automatically updated.
