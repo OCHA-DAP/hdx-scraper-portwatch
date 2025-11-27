@@ -12,6 +12,7 @@ build-backend = "hatchling.build"
 name = "hdx-scraper-portwatch"
 requires-python = ">=3.13"
 dependencies = [
+  "freezegun",
   "hdx-python-api",
   "hdx-python-country",
   "hdx-python-utilities",

@@ -58,6 +58,10 @@ et-xmlfile==2.0.0
     # via
     #   -c requirements.txt
     #   openpyxl
+freezegun==1.5.5
+    # via
+    #   -c requirements.txt
+    #   hdx-scraper-portwatch (pyproject.toml)
 frictionless==5.18.1
     # via
     #   -c requirements.txt
@@ -207,6 +211,7 @@ pytest-cov==7.0.0
 python-dateutil==2.9.0.post0
     # via
     #   -c requirements.txt
+    #   freezegun
     #   frictionless
     #   hdx-python-utilities
     #   libhxl

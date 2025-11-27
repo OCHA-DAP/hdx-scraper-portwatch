@@ -32,6 +32,8 @@ email-validator==2.3.0
     # via hdx-python-api
 et-xmlfile==2.0.0
     # via openpyxl
+freezegun==1.5.5
+    # via hdx-scraper-portwatch (pyproject.toml)
 frictionless==5.18.1
     # via hdx-python-utilities
 hdx-python-api==6.5.4
@@ -109,6 +111,7 @@ pyphonetics==0.5.3
     # via hdx-python-utilities
 python-dateutil==2.9.0.post0
     # via
+    #   freezegun
     #   frictionless
     #   hdx-python-utilities
     #   libhxl
