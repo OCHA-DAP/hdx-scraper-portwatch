@@ -8,7 +8,7 @@ ports_frequency: -2
 ports_methodology: Vessel Count uses real-time data on vessel movements—Automatic Identification System (AIS) signals of vessels— to calculate the yearly average number of ships passing through the chokepoint, over the timeframe 2019-2024. These yearly averages are available by 5 main ship categories (container, dry bulk, general cargo, ro-ro and tanker) plus the total. https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345
 
 daily_ports_notes: |
-  Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].
+  Daily count of port calls, estimates of incoming shipment volumes and outgoing shipment volumes (in metric tons) for ports in [country].
 
 chokepoints_notes: |
   The PortWatch chokepoints database includes 28 major global chokepoints along with other [associated information](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about). This dataset refers to narrow, strategic maritime passage like a strait or canal that is critical for global shipments. These are points where large volumes of traffic must pass, making them vulnerable to disruptions from factors like geopolitical conflict, natural disasters, or accidents. PortWatch specifically tracks and analyzes data related to these chokepoints.

@@ -11,4 +11,4 @@ package_creator: HDX Data Systems Team
 private: False
 maintainer: 1d7ceaf2-06c0-49f8-a871-fc974a07ed75
 owner_org: 22945e84-d492-497f-9ffa-f9c6c394c04f
-notes: Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].
+notes: Daily count of port calls, estimates of incoming shipment volumes and outgoing shipment volumes (in metric tons) for ports in [country].

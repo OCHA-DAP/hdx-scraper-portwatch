@@ -29,7 +29,7 @@ METHODOLOGY = (
 )
 
 NOTES = (
-    "Daily count of port calls, estimates of import volumes and export "
+    "Daily count of port calls, estimates of incoming shipment volumes and outgoing shipment "
     "volumes (in metric tons) for ports in [country]."
 )
 
