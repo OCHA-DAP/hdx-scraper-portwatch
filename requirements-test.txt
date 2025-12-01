@@ -262,7 +262,7 @@ rich==14.2.0
     # via
     #   -c requirements.txt
     #   typer
-rpds-py==0.29.0
+rpds-py==0.30.0
     # via
     #   -c requirements.txt
     #   jsonschema

@@ -315,7 +315,7 @@ class Pipeline:
         if not daily_chokepoints_rows:
             return None
 
-        dataset_title = "Daily Chokepoint Transit Calls and Trade Volume Estimates"
+        dataset_title = "Daily Chokepoint Transit Calls and Shipment Volume Estimates"
         dataset_name = slugify(dataset_title)
         dataset_tags = self._configuration["tags"]
 
@@ -339,7 +339,7 @@ class Pipeline:
         csv_resource_data = {
             "name": csv_filename,
             "description": (
-                "Daily chokepoint transit calls and preliminary transit trade volume estimates for 28 major chokepoints worldwide. See variable descriptions "
+                "Daily chokepoint transit calls and preliminary transit shipment volume estimates for 28 major chokepoints worldwide. See variable descriptions "
                 "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)"
             ),
         }
@@ -357,7 +357,7 @@ class Pipeline:
 
         return dataset
 
-    def get_trade_data(self, iso3: str) -> List:
+    def get_daily_ports(self, iso3: str) -> List:
         base_url = (
             f"{self._configuration['base_url']}/Daily_Trade_Data/FeatureServer/0/query"
         )
@@ -376,7 +376,7 @@ class Pipeline:
                 "resultRecordCount": limit,
             }
             data = self._retriever.download_json(
-                base_url, parameters=params, filename="trade.json"
+                base_url, parameters=params, filename="daily_ports.json"
             )
 
             features = data.get("features", [])
@@ -399,17 +399,19 @@ class Pipeline:
         all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
         return all_data
 
-    def generate_trade_dataset(
+    def generate_daily_ports_dataset(
         self, country_code: str, data_by_country: List
     ) -> Optional[Dataset]:
         if not data_by_country:
             logger.warning(
-                f"No trade data for country {country_code}, skipping dataset creation"
+                f"No daily ports data for country {country_code}, skipping dataset creation"
             )
             return None
 
         country_name = Country.get_country_name_from_iso3(country_code)
-        dataset_title = f"{country_name}: Daily Port Activity Data and Trade Estimates"
+        dataset_title = (
+            f"{country_name}: Daily Port Activity Data and Shipment Estimates"
+        )
         dataset_name = slugify(dataset_title)
         dataset_tags = self._configuration["tags"]
 
@@ -438,7 +440,7 @@ class Pipeline:
         resource_data = {
             "name": resource_name,
             "description": (
-                f"Daily port activity and preliminary trade volume estimates "
+                f"Daily port activity and preliminary shipment volume estimates "
                 f"for {country_name}. See variable descriptions [here](https://portwatch.imf.org/datasets/959214444157458aad969389b3ebe1a0_0/about)"
             ),
         }

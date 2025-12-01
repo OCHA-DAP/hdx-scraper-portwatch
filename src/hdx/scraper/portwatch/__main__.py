@@ -68,28 +68,28 @@ def main(
             # Get chokepoints data
             chokepoints_rows, chokepoints_geojson = pipeline.get_chokepoints()
 
-            # Create trade datasets by country
+            # Create daily port datasets by country
             countries = pipeline.get_port_countries(ports_rows)
             for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
-                trade_data = pipeline.get_trade_data(country_code)
-                trade_dataset = pipeline.generate_trade_dataset(
-                    country_code, trade_data
+                daily_port_data = pipeline.get_daily_ports(country_code)
+                daily_port_dataset = pipeline.generate_daily_ports_dataset(
+                    country_code, daily_port_data
                 )
-                if trade_dataset:
-                    trade_dataset.update_from_yaml(
+                if daily_port_dataset:
+                    daily_port_dataset.update_from_yaml(
                         script_dir_plus_file(
                             join("config", "hdx_dataset_static.yaml"), main
                         )
                     )
 
-                    trade_dataset["notes"] = configuration["trade_notes"].replace(
-                        "[country]", country_name
-                    )
-                    trade_dataset["data_update_frequency"] = configuration[
+                    daily_port_dataset["notes"] = configuration[
+                        "daily_ports_notes"
+                    ].replace("[country]", country_name)
+                    daily_port_dataset["data_update_frequency"] = configuration[
                         "update_frequency_default"
                     ]
-                    trade_dataset.create_in_hdx(
+                    daily_port_dataset.create_in_hdx(
                         remove_additional_resources=True,
                         match_resource_order=False,
                         hxl_update=False,

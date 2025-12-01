@@ -9,6 +9,6 @@ caveats:
 dataset_source: UN Global Platform; IMF PortWatch
 package_creator: HDX Data Systems Team
 private: False
-maintainer: fdbb8e79-f020-4039-ab3a-9adb482273b8 # erikawei
-owner_org: 22945e84-d492-497f-9ffa-f9c6c394c04f # portwatch
+maintainer: 1d7ceaf2-06c0-49f8-a871-fc974a07ed75
+owner_org: 22945e84-d492-497f-9ffa-f9c6c394c04f
 notes: Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].

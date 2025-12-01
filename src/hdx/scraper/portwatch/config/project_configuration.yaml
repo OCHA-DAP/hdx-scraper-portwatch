@@ -2,21 +2,21 @@
 base_url: https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services
 update_frequency_default: 7
 
-trade_notes: |
-  Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].
-
 ports_notes: |
-  The PortWatch ports database includes 1,854 ports globally along with other [associated information](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about). This dataset shows the satellite-based vessel data from the UN Global Platform, this monitor provides real-time indicators of port and trade activity for the ports.
+  The PortWatch ports database includes 1,854 ports globally along with other [associated information](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about). This dataset shows the satellite-based vessel data from the UN Global Platform, this monitor provides real-time indicators of port and shipment activity for the ports.
 ports_frequency: -2
 ports_methodology: Vessel Count uses real-time data on vessel movements—Automatic Identification System (AIS) signals of vessels— to calculate the yearly average number of ships passing through the chokepoint, over the timeframe 2019-2024. These yearly averages are available by 5 main ship categories (container, dry bulk, general cargo, ro-ro and tanker) plus the total. https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345
 
+daily_ports_notes: |
+  Daily count of port calls, estimates of import volumes and export volumes (in metric tons) for ports in [country].
+
 chokepoints_notes: |
-  The PortWatch chokepoints database includes 28 major global chokepoints along with other [associated information](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about). This dataset refers to narrow, strategic maritime passage like a strait or canal that is critical for global trade. These are points where large volumes of traffic must pass, making them vulnerable to disruptions from factors like geopolitical conflict, natural disasters, or accidents. PortWatch specifically tracks and analyzes data related to these chokepoints.
+  The PortWatch chokepoints database includes 28 major global chokepoints along with other [associated information](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about). This dataset refers to narrow, strategic maritime passage like a strait or canal that is critical for global shipments. These are points where large volumes of traffic must pass, making them vulnerable to disruptions from factors like geopolitical conflict, natural disasters, or accidents. PortWatch specifically tracks and analyzes data related to these chokepoints.
 chokepoints_frequency: -2
 chokepoints_methodology: Vessel Count uses real-time data on vessel movements—Automatic Identification System (AIS) signals of vessels— to calculate the yearly average number of ships passing through the chokepoint, over the timeframe 2019-2024. These yearly averages are available by 5 main ship categories (container, dry bulk, general cargo, ro-ro and tanker) plus the total. https://www.imf.org/en/publications/wp/issues/2021/08/20/tracking-trade-from-space-an-application-to-pacific-island-countries-464345
 
 daily_chokepoints_notes: |
-  Daily transit calls and estimates of transit trade volumes (in metric tons) for 28 chokepoints around the world.
+  Daily transit calls and estimates of transit shipment volumes (in metric tons) for 28 chokepoints around the world.
 
 disruptions_notes: |
   The PortWatch Disruptions dataset collects data from the Global Disaster Alert and Coordination System ([GDACS](https://www.gdacs.org/)), which provides alerts on natural hazards such as earthquakes, tsunamis, tropical cyclones, floods, volcanic eruptions, and droughts, as well as other types of disruptions such as those arising from geopolitical tensions. PortWatch intersects this data with their ports and chokepoints databases to identify locations that may be at risk  of being disrupted.
