@@ -12,7 +12,9 @@ from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.location.country import Country
+from hdx.utilities.downloader import Download
 from hdx.utilities.retriever import Retrieve
+from requests.exceptions import JSONDecodeError as RequestsJSONDecodeError
 from slugify import slugify
 
 logger = logging.getLogger(__name__)
@@ -375,9 +377,40 @@ class Pipeline:
                 "resultOffset": offset,
                 "resultRecordCount": limit,
             }
-            data = self._retriever.download_json(
-                base_url, parameters=params, filename="daily_ports.json"
-            )
+            # data = self._retriever.download_json(
+            #     base_url, parameters=params, filename="daily_ports.json"
+            # )
+
+            try:
+                data = self._retriever.download_json(
+                    base_url, parameters=params, filename="daily_ports.json"
+                )
+            except RequestsJSONDecodeError:
+                # Extra debug logging for Jenkins so we can see what ArcGIS is returning
+                logger.error(
+                    "JSONDecodeError when calling Daily_Trade_Data endpoint "
+                    "for iso3=%s, offset=%s, limit=%s",
+                    iso3,
+                    offset,
+                    limit,
+                )
+                with Download(user_agent="portwatch-debug") as d:
+                    d.download(base_url, parameters=params)
+                    resp = d.response
+                    logger.error(
+                        "DEBUG Daily_Trade_Data status_code: %s", resp.status_code
+                    )
+                    logger.error(
+                        "DEBUG Daily_Trade_Data content-type: %s",
+                        resp.headers.get("content-type"),
+                    )
+                    body_preview = resp.text[:1000]  # avoid flooding Jenkins logs
+                    logger.error(
+                        "DEBUG Daily_Trade_Data body (first 1000 chars): %r",
+                        body_preview,
+                    )
+                # Re-raise so the scraper still fails, but now with useful context
+                raise
 
             features = data.get("features", [])
             if not features:
