@@ -385,7 +385,7 @@ class Pipeline:
                 data = self._retriever.download_json(
                     base_url, parameters=params, filename="daily_ports.json"
                 )
-            except RequestsJSONDecodeError:
+            except RequestsJSONDecodeError as exc:
                 # Extra debug logging for Jenkins so we can see what ArcGIS is returning
                 logger.error(
                     "JSONDecodeError when calling Daily_Trade_Data endpoint "
@@ -409,8 +409,20 @@ class Pipeline:
                         "DEBUG Daily_Trade_Data body (first 1000 chars): %r",
                         body_preview,
                     )
-                # Re-raise so the scraper still fails, but now with useful context
-                raise
+
+                    # Second attempt: try to parse the debug response as JSON
+                    try:
+                        data = resp.json()
+                    except Exception as exc2:
+                        logger.error(
+                            "Second JSON parse attempt also failed for iso3=%s, "
+                            "offset=%s, limit=%s; giving up.",
+                            iso3,
+                            offset,
+                            limit,
+                        )
+                        # Re-raise the original error so the scraper clearly fails
+                        raise exc from exc2
 
             features = data.get("features", [])
             if not features:
