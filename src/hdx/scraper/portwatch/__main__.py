@@ -92,7 +92,6 @@ def main(
                     daily_port_dataset.create_in_hdx(
                         remove_additional_resources=True,
                         match_resource_order=False,
-                        hxl_update=False,
                         updated_by_script=_UPDATED_BY_SCRIPT,
                         batch=info["batch"],
                     )
@@ -120,7 +119,6 @@ def main(
                 daily_chokepoints_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
-                    hxl_update=False,
                     updated_by_script=_UPDATED_BY_SCRIPT,
                     batch=info["batch"],
                 )
@@ -149,7 +147,6 @@ def main(
                 chokepoints_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
-                    hxl_update=False,
                     updated_by_script=_UPDATED_BY_SCRIPT,
                     batch=info["batch"],
                 )
@@ -172,7 +169,6 @@ def main(
                 ports_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
-                    hxl_update=False,
                     updated_by_script=_UPDATED_BY_SCRIPT,
                     batch=info["batch"],
                 )
@@ -199,7 +195,6 @@ def main(
                 disruptions_dataset.create_in_hdx(
                     remove_additional_resources=True,
                     match_resource_order=False,
-                    hxl_update=False,
                     updated_by_script=_UPDATED_BY_SCRIPT,
                     batch=info["batch"],
                 )

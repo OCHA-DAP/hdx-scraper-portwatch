@@ -111,14 +111,12 @@ class Pipeline:
         }
 
         headers = list(ports_rows[0].keys())
-        dataset.generate_resource_from_iterable(
-            headers=headers,
-            iterable=ports_rows,
-            hxltags={},
+        dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
+            rows=ports_rows,
             resourcedata=csv_resource_data,
-            quickcharts=None,
+            headers=headers,
         )
 
         # Create geojson resource
@@ -238,14 +236,12 @@ class Pipeline:
         }
 
         headers = list(chokepoints_rows[0].keys())
-        dataset.generate_resource_from_iterable(
-            headers=headers,
-            iterable=chokepoints_rows,
-            hxltags={},
+        dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
+            rows=chokepoints_rows,
             resourcedata=csv_resource_data,
-            quickcharts=None,
+            headers=headers,
         )
 
         # Create geojson resource
@@ -347,14 +343,12 @@ class Pipeline:
         }
 
         headers = list(daily_chokepoints_rows[0].keys())
-        dataset.generate_resource_from_iterable(
-            headers=headers,
-            iterable=daily_chokepoints_rows,
-            hxltags={},
+        dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
+            rows=daily_chokepoints_rows,
             resourcedata=csv_resource_data,
-            quickcharts=None,
+            headers=headers,
         )
 
         return dataset
@@ -492,14 +486,12 @@ class Pipeline:
 
         # Get headers
         headers = list(data_by_country[0].keys())
-        dataset.generate_resource_from_iterable(
-            headers=headers,
-            iterable=data_by_country,
-            hxltags={},
+        dataset.generate_resource(
             folder=self._tempdir,
             filename=resource_name,
+            rows=data_by_country,
             resourcedata=resource_data,
-            quickcharts=None,
+            headers=headers,
         )
 
         return dataset
@@ -606,14 +598,12 @@ class Pipeline:
         }
 
         headers = list(disruptions_rows[0].keys())
-        dataset.generate_resource_from_iterable(
-            headers=headers,
-            iterable=disruptions_rows,
-            hxltags={},
+        dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
+            rows=disruptions_rows,
             resourcedata=csv_resource_data,
-            quickcharts=None,
+            headers=headers,
         )
 
         # Create geojson resource
