@@ -301,7 +301,7 @@ class Pipeline:
             offset += limit
 
         for row in all_data:
-            row["date"] = datetime.fromtimestamp(row["date"] / 1000, tz=timezone.utc)
+            row["date"] = self.parse_date(row["date"])
             row.pop("ObjectId", None)
 
         all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
@@ -432,7 +432,7 @@ class Pipeline:
             offset += limit
 
         for row in all_data:
-            # row["date"] = datetime.fromtimestamp(row["date"] / 1000, tz=timezone.utc)
+            row["date"] = self.parse_date(row["date"])
             row.pop("ObjectId", None)
 
         all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
@@ -562,13 +562,13 @@ class Pipeline:
         # Format date rows
         for row in disruptions_rows:
             row["fromdate"] = datetime.fromtimestamp(
-                row["fromdate"] / 1000, tz=timezone.utc
+                int(row["fromdate"]) / 1000, tz=timezone.utc
             )
             if row.get("todate") is None:
                 row["todate"] = row["fromdate"]
             else:
                 row["todate"] = datetime.fromtimestamp(
-                    row["todate"] / 1000, tz=timezone.utc
+                    int(row["todate"]) / 1000, tz=timezone.utc
                 )
             row.pop("ObjectId", None)
 
@@ -642,3 +642,11 @@ class Pipeline:
             return None, None
 
         return min(from_dates), max(to_dates)
+
+    def parse_date(self, value) -> datetime:
+        try:
+            return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc)
+        except (ValueError, TypeError):
+            return datetime.strptime(str(value)[:10], "%Y-%m-%d").replace(
+                tzinfo=timezone.utc
+            )
