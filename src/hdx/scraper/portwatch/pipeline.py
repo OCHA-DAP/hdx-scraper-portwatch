@@ -355,7 +355,7 @@ class Pipeline:
 
     def get_daily_ports(self, iso3: str) -> List:
         base_url = (
-            f"{self._configuration['base_url']}/Daily_Trade_Data/FeatureServer/0/query"
+            f"{self._configuration['base_url']}/Daily_Ports_Data/FeatureServer/0/query"
         )
         all_data = []
         offset = 0
@@ -432,7 +432,7 @@ class Pipeline:
             offset += limit
 
         for row in all_data:
-            row["date"] = datetime.fromtimestamp(row["date"] / 1000, tz=timezone.utc)
+            # row["date"] = datetime.fromtimestamp(row["date"] / 1000, tz=timezone.utc)
             row.pop("ObjectId", None)
 
         all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
@@ -480,7 +480,7 @@ class Pipeline:
             "name": resource_name,
             "description": (
                 f"Daily port activity and preliminary shipment volume estimates "
-                f"for {country_name}. See variable descriptions [here](https://portwatch.imf.org/datasets/959214444157458aad969389b3ebe1a0_0/about)"
+                f"for {country_name}. See variable descriptions [here](https://portwatch.imf.org/datasets/d51e4539d51a4cc793a91f865de6bf80/about)"
             ),
         }
 

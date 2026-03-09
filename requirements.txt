@@ -14,7 +14,7 @@ certifi==2026.2.25
     # via requests
 chardet==7.0.1
     # via frictionless
-charset-normalizer==3.4.4
+charset-normalizer==3.4.5
     # via requests
 ckanapi==4.9
     # via hdx-python-api
@@ -130,7 +130,7 @@ rpds-py==0.30.0
     #   referencing
 ruamel-yaml==0.19.1
     # via hdx-python-utilities
-setuptools==82.0.0
+setuptools==82.0.1
     # via ckanapi
 shellingham==1.5.4
     # via typer

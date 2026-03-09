@@ -23,7 +23,7 @@ chardet==7.0.1
     # via
     #   -c requirements.txt
     #   frictionless
-charset-normalizer==3.4.4
+charset-normalizer==3.4.5
     # via
     #   -c requirements.txt
     #   requests
@@ -238,7 +238,7 @@ ruamel-yaml==0.19.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-setuptools==82.0.0
+setuptools==82.0.1
     # via
     #   -c requirements.txt
     #   ckanapi

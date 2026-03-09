@@ -44,7 +44,7 @@ def main(
     """
     logger.info(f"##### {_LOOKUP} version {__version__} ####")
     configuration = Configuration.read()
-    User.check_current_user_write_access("hdx")
+    User.check_current_user_write_access("22945e84-d492-497f-9ffa-f9c6c394c04f")
 
     with wheretostart_tempdir_batch(folder=_LOOKUP) as info:
         tempdir = info["folder"]
@@ -203,7 +203,7 @@ def main(
 if __name__ == "__main__":
     facade(
         main,
-        # hdx_site="stage",
+        # hdx_site="prod",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=_LOOKUP,
         project_config_yaml=script_dir_plus_file(
