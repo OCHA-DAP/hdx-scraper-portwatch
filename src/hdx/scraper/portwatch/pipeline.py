@@ -12,9 +12,7 @@ from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.location.country import Country
-from hdx.utilities.downloader import Download
 from hdx.utilities.retriever import Retrieve
-from requests.exceptions import JSONDecodeError as RequestsJSONDecodeError
 from slugify import slugify
 
 logger = logging.getLogger(__name__)
@@ -31,7 +29,7 @@ class Pipeline:
         ports_rows = []
         geojson_features = []
         offset = 0
-        limit = 1000
+        limit = 5000
 
         while True:
             params = {
@@ -42,6 +40,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="ports.json"
@@ -157,7 +156,7 @@ class Pipeline:
         chokepoints_rows = []
         geojson_features = []
         offset = 0
-        limit = 1000
+        limit = 5000
 
         while True:
             params = {
@@ -168,6 +167,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="chokepoints.json"
@@ -271,7 +271,7 @@ class Pipeline:
         base_url = f"{self._configuration['base_url']}/Daily_Chokepoints_Data/FeatureServer/0/query"
         all_data = []
         offset = 0
-        limit = 1000
+        limit = 5000
 
         while True:
             params = {
@@ -282,6 +282,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="daily_chokepoints.json"
@@ -359,7 +360,7 @@ class Pipeline:
         )
         all_data = []
         offset = 0
-        limit = 1000
+        limit = 5000
 
         while True:
             params = {
@@ -370,53 +371,11 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": 5,
             }
-            # data = self._retriever.download_json(
-            #     base_url, parameters=params, filename="daily_ports.json"
-            # )
-
-            try:
-                data = self._retriever.download_json(
-                    base_url, parameters=params, filename="daily_ports.json"
-                )
-            except RequestsJSONDecodeError as exc:
-                # Extra debug logging for Jenkins so we can see what ArcGIS is returning
-                logger.error(
-                    "JSONDecodeError when calling Daily_Trade_Data endpoint "
-                    "for iso3=%s, offset=%s, limit=%s",
-                    iso3,
-                    offset,
-                    limit,
-                )
-                with Download(user_agent="portwatch-debug") as d:
-                    d.download(base_url, parameters=params)
-                    resp = d.response
-                    logger.error(
-                        "DEBUG Daily_Trade_Data status_code: %s", resp.status_code
-                    )
-                    logger.error(
-                        "DEBUG Daily_Trade_Data content-type: %s",
-                        resp.headers.get("content-type"),
-                    )
-                    body_preview = resp.text[:1000]  # avoid flooding Jenkins logs
-                    logger.error(
-                        "DEBUG Daily_Trade_Data body (first 1000 chars): %r",
-                        body_preview,
-                    )
-
-                    # Second attempt: try to parse the debug response as JSON
-                    try:
-                        data = resp.json()
-                    except Exception as exc2:
-                        logger.error(
-                            "Second JSON parse attempt also failed for iso3=%s, "
-                            "offset=%s, limit=%s; giving up.",
-                            iso3,
-                            offset,
-                            limit,
-                        )
-                        # Re-raise the original error so the scraper clearly fails
-                        raise exc from exc2
+            data = self._retriever.download_json(
+                base_url, parameters=params, filename="daily_ports.json"
+            )
 
             features = data.get("features", [])
             if not features:
@@ -501,7 +460,7 @@ class Pipeline:
         disruptions_rows = []
         geojson_features = []
         offset = 0
-        limit = 1000
+        limit = 5000
 
         while True:
             params = {
@@ -512,6 +471,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="disruptions.json"
@@ -644,9 +604,8 @@ class Pipeline:
         return min(from_dates), max(to_dates)
 
     def parse_date(self, value) -> datetime:
-        try:
-            return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc)
-        except (ValueError, TypeError):
-            return datetime.strptime(str(value)[:10], "%Y-%m-%d").replace(
+        if isinstance(value, str):
+            return datetime.strptime(value[:10], "%Y-%m-%d").replace(
                 tzinfo=timezone.utc
             )
+        return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc)
