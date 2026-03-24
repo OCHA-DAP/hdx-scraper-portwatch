@@ -4,6 +4,7 @@
 import json
 import logging
 import os
+from collections import defaultdict
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
@@ -12,12 +13,14 @@ from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.location.country import Country
-from hdx.utilities.downloader import Download
 from hdx.utilities.retriever import Retrieve
-from requests.exceptions import JSONDecodeError as RequestsJSONDecodeError
 from slugify import slugify
 
 logger = logging.getLogger(__name__)
+
+# ArcGIS caps maxRecordCountFactor at 5, giving 5 × 1000 = 5000 records per page
+_MAX_RECORD_COUNT_FACTOR = 5
+_PAGE_LIMIT = 5000
 
 
 class Pipeline:
@@ -31,7 +34,7 @@ class Pipeline:
         ports_rows = []
         geojson_features = []
         offset = 0
-        limit = 1000
+        limit = _PAGE_LIMIT
 
         while True:
             params = {
@@ -42,6 +45,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": _MAX_RECORD_COUNT_FACTOR,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="ports.json"
@@ -62,10 +66,9 @@ class Pipeline:
                 # Create rows for csv
                 ports_rows.append(props)
 
-            if len(features) < limit:
+            offset += len(features)
+            if len(features) < 1000:
                 break
-
-            offset += limit
 
         ports_geojson = {
             "type": "FeatureCollection",
@@ -157,7 +160,7 @@ class Pipeline:
         chokepoints_rows = []
         geojson_features = []
         offset = 0
-        limit = 1000
+        limit = _PAGE_LIMIT
 
         while True:
             params = {
@@ -168,6 +171,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": _MAX_RECORD_COUNT_FACTOR,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="chokepoints.json"
@@ -188,10 +192,9 @@ class Pipeline:
                 # Create rows for csv
                 chokepoints_rows.append(props)
 
-            if len(features) < limit:
+            offset += len(features)
+            if len(features) < 1000:
                 break
-
-            offset += limit
 
         chokepoints_geojson = {
             "type": "FeatureCollection",
@@ -271,7 +274,7 @@ class Pipeline:
         base_url = f"{self._configuration['base_url']}/Daily_Chokepoints_Data/FeatureServer/0/query"
         all_data = []
         offset = 0
-        limit = 1000
+        limit = _PAGE_LIMIT
 
         while True:
             params = {
@@ -282,6 +285,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": _MAX_RECORD_COUNT_FACTOR,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="daily_chokepoints.json"
@@ -295,10 +299,9 @@ class Pipeline:
                 attrs = feature.get("attributes", {})
                 all_data.append(attrs)
 
-            if len(features) < limit:
+            offset += len(features)
+            if len(features) < 1000:
                 break
-
-            offset += limit
 
         for row in all_data:
             row["date"] = self.parse_date(row["date"])
@@ -353,70 +356,31 @@ class Pipeline:
 
         return dataset
 
-    def get_daily_ports(self, iso3: str) -> List:
+    def get_all_daily_ports(self) -> Dict[str, List]:
         base_url = (
             f"{self._configuration['base_url']}/Daily_Ports_Data/FeatureServer/0/query"
         )
         all_data = []
         offset = 0
-        limit = 1000
+        limit = _PAGE_LIMIT
 
         while True:
             params = {
-                "where": f"ISO3='{iso3}'",
+                "where": "1=1",
                 "outFields": "*",
                 "outSR": 4326,
                 "f": "json",
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": _MAX_RECORD_COUNT_FACTOR,
             }
-            # data = self._retriever.download_json(
-            #     base_url, parameters=params, filename="daily_ports.json"
-            # )
 
-            try:
-                data = self._retriever.download_json(
-                    base_url, parameters=params, filename="daily_ports.json"
-                )
-            except RequestsJSONDecodeError as exc:
-                # Extra debug logging for Jenkins so we can see what ArcGIS is returning
-                logger.error(
-                    "JSONDecodeError when calling Daily_Trade_Data endpoint "
-                    "for iso3=%s, offset=%s, limit=%s",
-                    iso3,
-                    offset,
-                    limit,
-                )
-                with Download(user_agent="portwatch-debug") as d:
-                    d.download(base_url, parameters=params)
-                    resp = d.response
-                    logger.error(
-                        "DEBUG Daily_Trade_Data status_code: %s", resp.status_code
-                    )
-                    logger.error(
-                        "DEBUG Daily_Trade_Data content-type: %s",
-                        resp.headers.get("content-type"),
-                    )
-                    body_preview = resp.text[:1000]  # avoid flooding Jenkins logs
-                    logger.error(
-                        "DEBUG Daily_Trade_Data body (first 1000 chars): %r",
-                        body_preview,
-                    )
-
-                    # Second attempt: try to parse the debug response as JSON
-                    try:
-                        data = resp.json()
-                    except Exception as exc2:
-                        logger.error(
-                            "Second JSON parse attempt also failed for iso3=%s, "
-                            "offset=%s, limit=%s; giving up.",
-                            iso3,
-                            offset,
-                            limit,
-                        )
-                        # Re-raise the original error so the scraper clearly fails
-                        raise exc from exc2
+            data = self._retriever.download_json(
+                base_url,
+                parameters=params,
+                filename=f"daily_ports_{offset}.json",
+            )
 
             features = data.get("features", [])
             if not features:
@@ -426,17 +390,22 @@ class Pipeline:
                 attrs = feature.get("attributes", {})
                 all_data.append(attrs)
 
-            if len(features) < limit:
+            offset += len(features)
+            if len(features) < 1000:
                 break
 
-            offset += limit
-
+        by_country = defaultdict(list)
         for row in all_data:
             row["date"] = self.parse_date(row["date"])
             row.pop("ObjectId", None)
+            iso3 = row.get("ISO3")
+            if iso3:
+                by_country[iso3].append(row)
 
-        all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
-        return all_data
+        for rows in by_country.values():
+            rows.sort(key=lambda x: x["date"], reverse=True)
+
+        return by_country
 
     def generate_daily_ports_dataset(
         self, country_code: str, data_by_country: List
@@ -501,7 +470,7 @@ class Pipeline:
         disruptions_rows = []
         geojson_features = []
         offset = 0
-        limit = 1000
+        limit = _PAGE_LIMIT
 
         while True:
             params = {
@@ -512,6 +481,7 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
+                "maxRecordCountFactor": _MAX_RECORD_COUNT_FACTOR,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="disruptions.json"
@@ -531,10 +501,9 @@ class Pipeline:
                 # Create rows for csv
                 disruptions_rows.append(props)
 
-            if len(features) < limit:
+            offset += len(features)
+            if len(features) < 1000:
                 break
-
-            offset += limit
 
         disruptions_geojson = {
             "type": "FeatureCollection",
@@ -644,6 +613,10 @@ class Pipeline:
         return min(from_dates), max(to_dates)
 
     def parse_date(self, value) -> datetime:
+        if isinstance(value, str):
+            return datetime.strptime(value[:10], "%Y-%m-%d").replace(
+                tzinfo=timezone.utc
+            )
         try:
             return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc)
         except (ValueError, TypeError):

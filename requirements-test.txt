@@ -8,7 +8,7 @@ annotated-types==0.7.0
     # via
     #   -c requirements.txt
     #   pydantic
-attrs==25.4.0
+attrs==26.1.0
     # via
     #   -c requirements.txt
     #   frictionless
@@ -19,15 +19,15 @@ certifi==2026.2.25
     # via
     #   -c requirements.txt
     #   requests
-chardet==7.0.1
+chardet==7.3.0
     # via
     #   -c requirements.txt
     #   frictionless
-charset-normalizer==3.4.5
+charset-normalizer==3.4.6
     # via
     #   -c requirements.txt
     #   requests
-ckanapi==4.9
+ckanapi==4.11
     # via
     #   -c requirements.txt
     #   hdx-python-api
@@ -35,7 +35,7 @@ click==8.3.1
     # via
     #   -c requirements.txt
     #   typer
-coverage==7.13.4
+coverage==7.13.5
     # via pytest-cov
 defopt==7.0.0
     # via
@@ -183,7 +183,7 @@ pytest==9.0.2
     # via
     #   hdx-scraper-portwatch (pyproject.toml)
     #   pytest-cov
-pytest-cov==7.0.0
+pytest-cov==7.1.0
     # via hdx-scraper-portwatch (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
@@ -246,7 +246,7 @@ shellingham==1.5.4
     # via
     #   -c requirements.txt
     #   typer
-simpleeval==1.0.3
+simpleeval==1.0.7
     # via
     #   -c requirements.txt
     #   frictionless
@@ -257,7 +257,6 @@ simplejson==3.20.2
 six==1.17.0
     # via
     #   -c requirements.txt
-    #   ckanapi
     #   pockets
     #   python-dateutil
     #   sphinxcontrib-napoleon
