@@ -259,7 +259,8 @@ class TestPipeline:
 
                 # Test Daily Ports dataset
                 country_code = "ABW"
-                daily_ports_data = pipeline.get_daily_ports(country_code)
+                all_daily_ports = pipeline.get_all_daily_ports()
+                daily_ports_data = all_daily_ports.get(country_code, [])
                 daily_ports_dataset = pipeline.generate_daily_ports_dataset(
                     country_code, daily_ports_data
                 )
