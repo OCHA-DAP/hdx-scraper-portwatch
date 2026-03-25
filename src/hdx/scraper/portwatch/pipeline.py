@@ -29,7 +29,7 @@ class Pipeline:
         ports_rows = []
         geojson_features = []
         offset = 0
-        limit = 5000
+        limit = 1000
 
         while True:
             params = {
@@ -40,7 +40,6 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
-                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="ports.json"
@@ -156,7 +155,7 @@ class Pipeline:
         chokepoints_rows = []
         geojson_features = []
         offset = 0
-        limit = 5000
+        limit = 1000
 
         while True:
             params = {
@@ -167,7 +166,6 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
-                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="chokepoints.json"
@@ -271,7 +269,7 @@ class Pipeline:
         base_url = f"{self._configuration['base_url']}/Daily_Chokepoints_Data/FeatureServer/0/query"
         all_data = []
         offset = 0
-        limit = 5000
+        limit = 1000
 
         while True:
             params = {
@@ -282,7 +280,6 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
-                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="daily_chokepoints.json"
@@ -360,7 +357,7 @@ class Pipeline:
         )
         all_data = []
         offset = 0
-        limit = 5000
+        limit = 1000
 
         while True:
             params = {
@@ -371,7 +368,6 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
-                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="daily_ports.json"
@@ -460,7 +456,7 @@ class Pipeline:
         disruptions_rows = []
         geojson_features = []
         offset = 0
-        limit = 5000
+        limit = 1000
 
         while True:
             params = {
@@ -471,7 +467,6 @@ class Pipeline:
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
-                "maxRecordCountFactor": 5,
             }
             data = self._retriever.download_json(
                 base_url, parameters=params, filename="disruptions.json"
