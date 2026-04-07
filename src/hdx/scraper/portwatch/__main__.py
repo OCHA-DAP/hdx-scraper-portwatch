@@ -72,7 +72,13 @@ def main(
             countries = pipeline.get_port_countries(ports_rows)
             for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
-                daily_port_data = pipeline.get_daily_ports(country_code)
+                try:
+                    daily_port_data = pipeline.get_daily_ports(country_code)
+                except Exception as e:
+                    logger.error(
+                        f"Failed to get daily ports for {country_code}, skipping: {e}"
+                    )
+                    continue
                 daily_port_dataset = pipeline.generate_daily_ports_dataset(
                     country_code, daily_port_data
                 )

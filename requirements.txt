@@ -12,13 +12,13 @@ attrs==26.1.0
     #   referencing
 certifi==2026.2.25
     # via requests
-chardet==7.3.0
+chardet==7.4.1
     # via frictionless
-charset-normalizer==3.4.6
+charset-normalizer==3.4.7
     # via requests
 ckanapi==4.11
     # via hdx-python-api
-click==8.3.1
+click==8.3.2
     # via typer
 defopt==7.0.0
     # via hdx-python-api
@@ -36,7 +36,7 @@ freezegun==1.5.5
     # via hdx-scraper-portwatch (pyproject.toml)
 frictionless==5.18.1
     # via hdx-python-utilities
-hdx-python-api==6.6.5
+hdx-python-api==6.6.7
     # via hdx-scraper-portwatch (pyproject.toml)
 hdx-python-country==4.1.1
     # via
@@ -89,7 +89,7 @@ pydantic==2.12.5
     # via frictionless
 pydantic-core==2.41.5
     # via pydantic
-pygments==2.19.2
+pygments==2.20.0
     # via rich
 pyphonetics==0.5.3
     # via hdx-python-utilities
@@ -112,7 +112,7 @@ referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
-requests==2.33.0
+requests==2.33.1
     # via
     #   ckanapi
     #   frictionless

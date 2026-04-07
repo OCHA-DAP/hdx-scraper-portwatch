@@ -19,11 +19,11 @@ certifi==2026.2.25
     # via
     #   -c requirements.txt
     #   requests
-chardet==7.3.0
+chardet==7.4.1
     # via
     #   -c requirements.txt
     #   frictionless
-charset-normalizer==3.4.6
+charset-normalizer==3.4.7
     # via
     #   -c requirements.txt
     #   requests
@@ -31,7 +31,7 @@ ckanapi==4.11
     # via
     #   -c requirements.txt
     #   hdx-python-api
-click==8.3.1
+click==8.3.2
     # via
     #   -c requirements.txt
     #   typer
@@ -69,7 +69,7 @@ frictionless==5.18.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-hdx-python-api==6.6.5
+hdx-python-api==6.6.7
     # via
     #   -c requirements.txt
     #   hdx-scraper-portwatch (pyproject.toml)
@@ -170,7 +170,7 @@ pydantic-core==2.41.5
     # via
     #   -c requirements.txt
     #   pydantic
-pygments==2.19.2
+pygments==2.20.0
     # via
     #   -c requirements.txt
     #   pytest
@@ -179,7 +179,7 @@ pyphonetics==0.5.3
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-pytest==9.0.2
+pytest==9.0.3
     # via
     #   hdx-scraper-portwatch (pyproject.toml)
     #   pytest-cov
@@ -210,7 +210,7 @@ referencing==0.37.0
     #   -c requirements.txt
     #   jsonschema
     #   jsonschema-specifications
-requests==2.33.0
+requests==2.33.1
     # via
     #   -c requirements.txt
     #   ckanapi
