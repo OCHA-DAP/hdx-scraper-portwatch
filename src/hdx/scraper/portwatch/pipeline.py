@@ -365,7 +365,7 @@ class Pipeline:
                 "outFields": "*",
                 "outSR": 4326,
                 "f": "json",
-                "orderByFields": "OBJECTID",
+                "orderByFields": "ObjectId",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
             }
@@ -387,7 +387,10 @@ class Pipeline:
             offset += limit
 
         for row in all_data:
-            row["date"] = self.parse_date(row["date"])
+            row["date"] = self.parse_date(row.pop("date_", row.get("date")))
+            for field in ("year_", "month_", "day_"):
+                if field in row:
+                    row[field[:-1]] = row.pop(field)
             row.pop("ObjectId", None)
 
         all_data = sorted(all_data, key=lambda x: x["date"], reverse=True)
