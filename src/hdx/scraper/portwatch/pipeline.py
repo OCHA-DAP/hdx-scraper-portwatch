@@ -371,6 +371,10 @@ class Pipeline:
                 base_url, parameters=params, filename="daily_ports.json"
             )
 
+            error = data.get("error")
+            if error:
+                raise ValueError(f"{error.get('code')} {error.get('message')}")
+
             features = data.get("features", [])
             if not features:
                 break

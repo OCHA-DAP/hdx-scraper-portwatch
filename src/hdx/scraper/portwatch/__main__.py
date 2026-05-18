@@ -75,10 +75,15 @@ def main(
             if iso3_filter:
                 filter_set = {c.strip().upper() for c in iso3_filter.split(",")}
                 countries = [c for c in countries if c in filter_set]
+            api_errors = {}
             for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
                 try:
                     daily_port_data = pipeline.get_daily_ports(country_code)
+                except ValueError as e:
+                    api_errors.setdefault(str(e), 0)
+                    api_errors[str(e)] += 1
+                    continue
                 except Exception as e:
                     logger.error(
                         f"Failed to get daily ports for {country_code}, skipping: {e}"
@@ -106,6 +111,12 @@ def main(
                         updated_by_script=_UPDATED_BY_SCRIPT,
                         batch=info["batch"],
                     )
+
+            if api_errors:
+                raise Exception(
+                    f"Daily ports API errors affected {sum(api_errors.values())} countries: "
+                    + "; ".join(f"{msg} ({n})" for msg, n in api_errors.items())
+                )
 
             # Get daily chokepoints data
             daily_chokepoints_rows = pipeline.get_daily_chokepoints()
