@@ -275,7 +275,6 @@ class Pipeline:
             params = {
                 "where": "1=1",
                 "outFields": "*",
-                "outSR": 4326,
                 "f": "json",
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
@@ -363,7 +362,6 @@ class Pipeline:
             params = {
                 "where": f"ISO3='{iso3}'",
                 "outFields": "*",
-                "outSR": 4326,
                 "f": "json",
                 "orderByFields": "ObjectId",
                 "resultOffset": offset,

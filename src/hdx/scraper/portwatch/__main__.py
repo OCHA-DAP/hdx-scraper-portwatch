@@ -32,12 +32,14 @@ _UPDATED_BY_SCRIPT = "HDX Scraper: Portwatch"
 def main(
     save: bool = False,
     use_saved: bool = False,
+    iso3_filter: str = "",
 ) -> None:
     """Generate datasets and create them in HDX
 
     Args:
         save (bool): Save downloaded data. Defaults to False.
         use_saved (bool): Use saved data. Defaults to False.
+        iso3_filter (str): Comma-separated ISO3 codes to process. Defaults to "" (all).
 
     Returns:
         None
@@ -70,6 +72,9 @@ def main(
 
             # Create daily port datasets by country
             countries = pipeline.get_port_countries(ports_rows)
+            if iso3_filter:
+                filter_set = {c.strip().upper() for c in iso3_filter.split(",")}
+                countries = [c for c in countries if c in filter_set]
             for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
                 try:
