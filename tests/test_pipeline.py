@@ -29,7 +29,7 @@ METHODOLOGY = (
 )
 
 NOTES = (
-    "Daily count of port calls, estimates of incoming shipment volumes and outgoing shipment "
+    "This dataset contains daily count of port calls, estimates of incoming shipment volumes and outgoing shipment "
     "volumes (in metric tons) for ports in [country]."
 )
 
@@ -110,7 +110,7 @@ class TestPipeline:
                         "description": (
                             "Global ports in CSV format. See variable descriptions "
                             "[here](https://portwatch.imf.org/datasets/"
-                            "acc668d199d1472abaaf2467133d4ca4/about)"
+                            "acc668d199d1472abaaf2467133d4ca4/about)."
                         ),
                         "format": "csv",
                     },
@@ -119,7 +119,7 @@ class TestPipeline:
                         "description": (
                             "Global ports in GeoJSON format. See variable descriptions "
                             "[here](https://portwatch.imf.org/datasets/"
-                            "acc668d199d1472abaaf2467133d4ca4/about)"
+                            "acc668d199d1472abaaf2467133d4ca4/about)."
                         ),
                         "format": "geojson",
                     },
@@ -149,7 +149,7 @@ class TestPipeline:
                         "name": "chokepoints.csv",
                         "description": (
                             "Global chokepoints in CSV format. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                            "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
                         ),
                         "format": "csv",
                     },
@@ -157,7 +157,7 @@ class TestPipeline:
                         "name": "chokepoints.geojson",
                         "description": (
                             "Global chokepoints in GeoJSON format. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                            "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
                         ),
                         "format": "geojson",
                     },
@@ -187,7 +187,7 @@ class TestPipeline:
                         "name": "daily-chokepoint-transit-calls-and-shipment-volume-estimates.csv",
                         "description": (
                             "Daily chokepoint transit calls and preliminary transit shipment volume estimates for 28 major chokepoints worldwide. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)"
+                            "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)."
                         ),
                         "format": "csv",
                     },
@@ -242,7 +242,7 @@ class TestPipeline:
                         "name": "disruptions.csv",
                         "description": (
                             "Dataset identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)"
+                            "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)."
                         ),
                         "format": "csv",
                     },
@@ -250,7 +250,7 @@ class TestPipeline:
                         "name": "disruptions.geojson",
                         "description": (
                             "Dataset in GeoJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                            "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
                         ),
                         "format": "geojson",
                     },
@@ -281,7 +281,7 @@ class TestPipeline:
                         "description": (
                             "Daily port activity and preliminary shipment volume estimates "
                             "for Aruba. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/d51e4539d51a4cc793a91f865de6bf80/about)"
+                            "[here](https://portwatch.imf.org/datasets/d51e4539d51a4cc793a91f865de6bf80/about)."
                         ),
                         "format": "csv",
                         "name": "aruba-daily-port-activity-data-and-shipment-estimates.csv",

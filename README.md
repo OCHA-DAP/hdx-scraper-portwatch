@@ -7,10 +7,10 @@ This scraper retrieves multiple datasets from the PortWatch API and publishes th
 
 * Ports data: published as global CSV and GeoJSON resources
 * Disruptions data: published as a global CSV and GeoJSON resource
-* Chokepoints data, Daily Chokepoint Transit Calls and Trade Volume Estimates data: each published as a global CSV resource
-* Daily Port Activity Data and Trade Estimates data: retrieved at the country level, published as one CSV file per country
+* Chokepoints data, Daily Chokepoint Transit Calls and Shipment Volume Estimates data: each published as a global CSV resource
+* Daily Port Activity Data and Shipment Estimates data: retrieved at the country level, published as one CSV file per country
 
-The scraper runs every Tuesday, shortly after the PortWatch API completes its weekly data update.
+The scraper runs every Wednesday, shortly after the PortWatch API completes its weekly data update.
 
 ## Development
 

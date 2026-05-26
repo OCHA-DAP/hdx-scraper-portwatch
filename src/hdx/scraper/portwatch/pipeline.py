@@ -42,13 +42,12 @@ class Pipeline:
                 "resultRecordCount": limit,
             }
             data = self._retriever.download_json(
-                base_url, parameters=params, filename="ports.json"
+                base_url, parameters=params, filename=f"ports_{offset}.json"
             )
 
             features = data.get("features", [])
             if not features:
                 break
-
             for feature in features:
                 props = feature.get("properties", {}) or {}
                 props.pop("ObjectId", None)
@@ -104,7 +103,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Global ports in CSV format. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
             ),
         }
 
@@ -130,7 +129,7 @@ class Pipeline:
                 "name": geojson_filename,
                 "description": (
                     "Global ports in GeoJSON format. See variable descriptions "
-                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
                 ),
                 "format": "geojson",
             }
@@ -168,13 +167,12 @@ class Pipeline:
                 "resultRecordCount": limit,
             }
             data = self._retriever.download_json(
-                base_url, parameters=params, filename="chokepoints.json"
+                base_url, parameters=params, filename=f"chokepoints_{offset}.json"
             )
 
             features = data.get("features", [])
             if not features:
                 break
-
             for feature in features:
                 props = feature.get("properties", {}) or {}
                 props.pop("ObjectId", None)
@@ -229,7 +227,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Global chokepoints in CSV format. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
             ),
         }
 
@@ -255,7 +253,7 @@ class Pipeline:
                 "name": geojson_filename,
                 "description": (
                     "Global chokepoints in GeoJSON format. See variable descriptions "
-                    "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)"
+                    "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
                 ),
                 "format": "geojson",
             }
@@ -275,19 +273,21 @@ class Pipeline:
             params = {
                 "where": "1=1",
                 "outFields": "*",
+                "returnGeometry": False,
                 "f": "json",
                 "orderByFields": "OBJECTID",
                 "resultOffset": offset,
                 "resultRecordCount": limit,
             }
             data = self._retriever.download_json(
-                base_url, parameters=params, filename="daily_chokepoints.json"
+                base_url,
+                parameters=params,
+                filename=f"daily_chokepoints_{offset}.json",
             )
 
             features = data.get("features", [])
             if not features:
                 break
-
             for feature in features:
                 attrs = feature.get("attributes", {})
                 all_data.append(attrs)
@@ -335,7 +335,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Daily chokepoint transit calls and preliminary transit shipment volume estimates for 28 major chokepoints worldwide. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)"
+                "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)."
             ),
         }
 
@@ -350,25 +350,31 @@ class Pipeline:
 
         return dataset
 
-    def get_daily_ports(self, iso3: str) -> List:
+    def get_daily_ports(self, iso3: str, year: Optional[int] = None) -> List:
         base_url = (
             f"{self._configuration['base_url']}/Daily_Ports_Data/FeatureServer/0/query"
         )
         all_data = []
-        offset = 0
         limit = 1000
 
+        where_base = f"ISO3='{iso3}'"
+        if year is not None:
+            where_base += f" AND year={year}"
+
+        last_objectid = 0
         while True:
             params = {
-                "where": f"ISO3='{iso3}'",
+                "where": f"{where_base} AND OBJECTID>{last_objectid}",
                 "outFields": "*",
+                "returnGeometry": False,
                 "f": "json",
-                "orderByFields": "ObjectId",
-                "resultOffset": offset,
+                "orderByFields": "OBJECTID",
                 "resultRecordCount": limit,
             }
             data = self._retriever.download_json(
-                base_url, parameters=params, filename="daily_ports.json"
+                base_url,
+                parameters=params,
+                filename=f"daily_ports_{iso3}_{year or 'all'}_{last_objectid}.json",
             )
 
             error = data.get("error")
@@ -378,15 +384,13 @@ class Pipeline:
             features = data.get("features", [])
             if not features:
                 break
-
             for feature in features:
                 attrs = feature.get("attributes", {})
                 all_data.append(attrs)
+            last_objectid = features[-1]["attributes"]["ObjectId"]
 
             if len(features) < limit:
                 break
-
-            offset += limit
 
         for row in all_data:
             row["date"] = self.parse_date(row.pop("date_", row.get("date")))
@@ -414,10 +418,8 @@ class Pipeline:
         dataset_name = slugify(dataset_title)
         dataset_tags = self._configuration["tags"]
 
-        # Get date range
         min_date, max_date = self.get_date_range(data_by_country)
 
-        # Dataset info
         dataset = Dataset(
             {
                 "name": dataset_name,
@@ -434,17 +436,15 @@ class Pipeline:
             logger.error(f"Couldn't find country {country_code}, skipping")
             return
 
-        # Create one resource per country
         resource_name = f"{dataset_name}.csv"
         resource_data = {
             "name": resource_name,
             "description": (
                 f"Daily port activity and preliminary shipment volume estimates "
-                f"for {country_name}. See variable descriptions [here](https://portwatch.imf.org/datasets/d51e4539d51a4cc793a91f865de6bf80/about)"
+                f"for {country_name}. See variable descriptions "
+                f"[here](https://portwatch.imf.org/datasets/d51e4539d51a4cc793a91f865de6bf80/about)."
             ),
         }
-
-        # Get headers
         headers = list(data_by_country[0].keys())
         dataset.generate_resource(
             folder=self._tempdir,
@@ -474,13 +474,14 @@ class Pipeline:
                 "resultRecordCount": limit,
             }
             data = self._retriever.download_json(
-                base_url, parameters=params, filename="disruptions.json"
+                base_url,
+                parameters=params,
+                filename=f"disruptions_{offset}.json",
             )
 
             features = data.get("features", [])
             if not features:
                 break
-
             for feature in features:
                 props = feature.get("properties", {}) or {}
 
@@ -553,7 +554,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Dataset identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)"
+                "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)."
             ),
         }
 
@@ -572,7 +573,7 @@ class Pipeline:
                 "name": geojson_filename,
                 "description": (
                     "Dataset in GeoJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)"
+                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
                 ),
                 "format": "geojson",
             }

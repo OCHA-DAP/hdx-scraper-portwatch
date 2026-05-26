@@ -6,6 +6,7 @@ script then creates in HDX.
 """
 
 import logging
+from datetime import datetime
 from os.path import expanduser, join
 
 from hdx.api.configuration import Configuration
@@ -75,20 +76,34 @@ def main(
             if iso3_filter:
                 filter_set = {c.strip().upper() for c in iso3_filter.split(",")}
                 countries = [c for c in countries if c in filter_set]
+
+            start_year = configuration["daily_ports_start_year"]
+            current_year = datetime.now().year
+
             api_errors = {}
             for country_code in countries:
                 country_name = Country.get_country_name_from_iso3(country_code)
                 try:
                     daily_port_data = pipeline.get_daily_ports(country_code)
-                except ValueError as e:
-                    api_errors.setdefault(str(e), 0)
-                    api_errors[str(e)] += 1
-                    continue
                 except Exception as e:
-                    logger.error(
-                        f"Failed to get daily ports for {country_code}, skipping: {e}"
+                    logger.warning(
+                        f"Single-query fetch failed for {country_code}: {e}. Falling back to per-year."
                     )
-                    continue
+                    daily_port_data = []
+                    for year in range(start_year, current_year + 1):
+                        try:
+                            year_rows = pipeline.get_daily_ports(country_code, year)
+                            if year_rows:
+                                daily_port_data.extend(year_rows)
+                        except ValueError as ye:
+                            api_errors.setdefault(str(ye), 0)
+                            api_errors[str(ye)] += 1
+                        except Exception as ye:
+                            logger.error(
+                                f"Failed to get daily ports for {country_code} {year}, skipping: {ye}"
+                            )
+                    daily_port_data.sort(key=lambda r: r["date"], reverse=True)
+
                 daily_port_dataset = pipeline.generate_daily_ports_dataset(
                     country_code, daily_port_data
                 )
