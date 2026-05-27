@@ -31,7 +31,7 @@ ckanapi==4.11
     # via
     #   -c requirements.txt
     #   hdx-python-api
-coverage==7.14.0
+coverage==7.14.1
     # via pytest-cov
 defopt==7.0.0
     # via

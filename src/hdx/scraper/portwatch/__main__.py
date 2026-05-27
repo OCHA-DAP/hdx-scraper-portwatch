@@ -96,6 +96,9 @@ def main(
                             if year_rows:
                                 daily_port_data.extend(year_rows)
                         except ValueError as ye:
+                            logger.warning(
+                                f"Per-year fetch failed for {country_code} {year}: {ye}"
+                            )
                             api_errors.setdefault(str(ye), 0)
                             api_errors[str(ye)] += 1
                         except Exception as ye:
@@ -240,7 +243,7 @@ def main(
 if __name__ == "__main__":
     facade(
         main,
-        # hdx_site="demo",
+        hdx_site="demo",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=_LOOKUP,
         project_config_yaml=script_dir_plus_file(

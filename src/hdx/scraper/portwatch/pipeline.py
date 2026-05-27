@@ -4,6 +4,7 @@
 import json
 import logging
 import os
+import time
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
@@ -361,23 +362,35 @@ class Pipeline:
         if year is not None:
             where_base += f" AND year={year}"
 
-        last_objectid = 0
+        last_objectid = None
         while True:
+            where = where_base
+            if last_objectid is not None:
+                where += f" AND OBJECTID>{last_objectid}"
             params = {
-                "where": f"{where_base} AND OBJECTID>{last_objectid}",
+                "where": where,
                 "outFields": "*",
                 "returnGeometry": False,
                 "f": "json",
                 "orderByFields": "OBJECTID",
                 "resultRecordCount": limit,
             }
-            data = self._retriever.download_json(
-                base_url,
-                parameters=params,
-                filename=f"daily_ports_{iso3}_{year or 'all'}_{last_objectid}.json",
-            )
+            filename = f"daily_ports_{iso3}_{year or 'all'}_{last_objectid or 0}.json"
+            for attempt in range(3):
+                data = self._retriever.download_json(
+                    base_url,
+                    parameters=params,
+                    filename=filename,
+                )
+                error = data.get("error")
+                if not error:
+                    break
+                if attempt < 2:
+                    logger.warning(
+                        f"Attempt {attempt + 1}/3 failed for {filename}: {error.get('message')}. Retrying..."
+                    )
+                    time.sleep(2 * (attempt + 1))
 
-            error = data.get("error")
             if error:
                 raise ValueError(f"{error.get('code')} {error.get('message')}")
 
