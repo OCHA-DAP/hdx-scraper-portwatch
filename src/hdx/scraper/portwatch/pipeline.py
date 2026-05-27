@@ -376,6 +376,7 @@ class Pipeline:
                 "resultRecordCount": limit,
             }
             filename = f"daily_ports_{iso3}_{year or 'all'}_{last_objectid or 0}.json"
+            error = None
             for attempt in range(3):
                 data = self._retriever.download_json(
                     base_url,
