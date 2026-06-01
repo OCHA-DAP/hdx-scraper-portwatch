@@ -456,7 +456,7 @@ class Pipeline:
             "description": (
                 f"Daily port activity and preliminary shipment volume estimates "
                 f"for {country_name}. See variable descriptions "
-                f"[here](https://portwatch.imf.org/datasets/d51e4539d51a4cc793a91f865de6bf80/about)."
+                f"[here](https://portwatch.imf.org/datasets/83b1bbc7b3354c5fb1f40673bb8f852e/about)."
             ),
         }
         headers = list(data_by_country[0].keys())
