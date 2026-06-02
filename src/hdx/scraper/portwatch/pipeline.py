@@ -104,7 +104,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Global ports in CSV format. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
+                f"[here]({self._configuration['ports_about_url']})."
             ),
         }
 
@@ -130,7 +130,7 @@ class Pipeline:
                 "name": geojson_filename,
                 "description": (
                     "Global ports in GeoJSON format. See variable descriptions "
-                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
+                    f"[here]({self._configuration['ports_about_url']})."
                 ),
                 "format": "geojson",
             }
@@ -228,7 +228,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Global chokepoints in CSV format. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
+                f"[here]({self._configuration['chokepoints_about_url']})."
             ),
         }
 
@@ -254,7 +254,7 @@ class Pipeline:
                 "name": geojson_filename,
                 "description": (
                     "Global chokepoints in GeoJSON format. See variable descriptions "
-                    "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
+                    f"[here]({self._configuration['chokepoints_about_url']})."
                 ),
                 "format": "geojson",
             }
@@ -336,7 +336,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Daily chokepoint transit calls and preliminary transit shipment volume estimates for 28 major chokepoints worldwide. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)."
+                f"[here]({self._configuration['daily_chokepoints_about_url']})."
             ),
         }
 
@@ -456,7 +456,7 @@ class Pipeline:
             "description": (
                 f"Daily port activity and preliminary shipment volume estimates "
                 f"for {country_name}. See variable descriptions "
-                f"[here](https://portwatch.imf.org/datasets/83b1bbc7b3354c5fb1f40673bb8f852e/about)."
+                f"[here]({self._configuration['daily_ports_about_url']})."
             ),
         }
         headers = list(data_by_country[0].keys())
@@ -568,7 +568,7 @@ class Pipeline:
             "name": csv_filename,
             "description": (
                 "Dataset identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)."
+                f"[here]({self._configuration['disruptions_about_url']})."
             ),
         }
 
@@ -587,7 +587,7 @@ class Pipeline:
                 "name": geojson_filename,
                 "description": (
                     "Dataset in GeoJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                    "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
+                    f"[here]({self._configuration['disruptions_about_url']})."
                 ),
                 "format": "geojson",
             }

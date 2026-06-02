@@ -187,7 +187,7 @@ class TestPipeline:
                         "name": "daily-chokepoint-transit-calls-and-shipment-volume-estimates.csv",
                         "description": (
                             "Daily chokepoint transit calls and preliminary transit shipment volume estimates for 28 major chokepoints worldwide. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/42132aa4e2fc4d41bdaf9a445f688931/about)."
+                            "[here](https://portwatch.imf.org/datasets/3da2b9ca97684916b75c4013f95d18ab/about)."
                         ),
                         "format": "csv",
                     },
@@ -242,7 +242,7 @@ class TestPipeline:
                         "name": "disruptions.csv",
                         "description": (
                             "Dataset identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7_0/about)."
+                            "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7/about)."
                         ),
                         "format": "csv",
                     },
@@ -250,7 +250,7 @@ class TestPipeline:
                         "name": "disruptions.geojson",
                         "description": (
                             "Dataset in GeoJSON format identifying ports and chokepoints at risk by intersecting GDACS data. See variable descriptions "
-                            "[here](https://portwatch.imf.org/datasets/acc668d199d1472abaaf2467133d4ca4/about)."
+                            "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7/about)."
                         ),
                         "format": "geojson",
                     },
