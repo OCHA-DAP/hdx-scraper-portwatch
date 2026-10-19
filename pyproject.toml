@@ -13,7 +13,7 @@ name = "hdx-scraper-portwatch"
 requires-python = ">=3.13"
 dependencies = [
   "freezegun",
-  "hdx-python-api>=6.7.0",
+  "hdx-python-api>=6.7.3",
   "hdx-python-country",
   "hdx-python-utilities",
 ]
