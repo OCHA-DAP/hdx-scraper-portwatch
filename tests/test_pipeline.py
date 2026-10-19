@@ -1,3 +1,4 @@
+import json
 from os.path import join
 
 from freezegun import freeze_time
@@ -85,6 +86,10 @@ class TestPipeline:
                     use_saved=True,
                 )
                 pipeline = Pipeline(configuration, retriever, tempdir)
+                data_dictionaries = {
+                    dict_type: json.dumps(columns, separators=(",", ":"))
+                    for dict_type, columns in configuration["data_dictionaries"].items()
+                }
 
                 # Test ports dataset
                 ports_rows, ports_geojson = pipeline.get_ports()
@@ -113,6 +118,7 @@ class TestPipeline:
                             "acc668d199d1472abaaf2467133d4ca4/about)."
                         ),
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["ports"],
                     },
                     {
                         "name": "ports.geojson",
@@ -152,6 +158,7 @@ class TestPipeline:
                             "[here](https://portwatch.imf.org/datasets/fa9a5800b0ee4855af8b2944ab1e07af/about)."
                         ),
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["chokepoints"],
                     },
                     {
                         "name": "chokepoints.geojson",
@@ -190,6 +197,7 @@ class TestPipeline:
                             "[here](https://portwatch.imf.org/datasets/3da2b9ca97684916b75c4013f95d18ab/about)."
                         ),
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["chokepoint_transits"],
                     },
                 ]
                 assert_resources(tempdir, input_dir, daily_chokepoints_resources)
@@ -245,6 +253,7 @@ class TestPipeline:
                             "[here](https://portwatch.imf.org/datasets/d9b37bf4b2104c85aebdcc0c1d8a2ab7/about)."
                         ),
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["disruptions"],
                     },
                     {
                         "name": "disruptions.geojson",
@@ -284,6 +293,7 @@ class TestPipeline:
                             "[here](https://portwatch.imf.org/datasets/83b1bbc7b3354c5fb1f40673bb8f852e/about)."
                         ),
                         "format": "csv",
+                        "hdx_data_dictionary": data_dictionaries["port_activity"],
                         "name": "aruba-daily-port-activity-data-and-shipment-estimates.csv",
                     }
                 ]

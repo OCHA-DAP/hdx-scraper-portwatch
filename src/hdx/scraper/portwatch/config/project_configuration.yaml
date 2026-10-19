@@ -42,3 +42,465 @@ disruptions_tags:
   - natural disasters
   - ports
   - trade
+
+# Columns of PortWatch resources (portwatch_schemas.xlsx): port_activity is
+# schema_001, chokepoint_transits schema_002, chokepoints schema_003, ports
+# schema_004 and disruptions schema_005
+data_dictionaries:
+  port_activity:
+    - field: date
+      label: Date
+      data_type: timestamp without time zone
+      description: "Date of observation"
+    - field: year
+      label: Year
+      data_type: numeric
+      description: "Calendar year of observation"
+    - field: month
+      label: Month
+      data_type: numeric
+      description: "Calendar month of observation"
+    - field: day
+      label: Day
+      data_type: numeric
+      description: "Day of month of observation"
+    - field: portid
+      label: Port ID
+      data_type: text
+      description: "Unique PortWatch port identifier"
+    - field: portname
+      label: Port name
+      data_type: text
+      description: "Port name"
+    - field: country
+      label: Country
+      data_type: text
+      description: "Country name"
+    - field: ISO3
+      label: ISO3
+      data_type: text
+      description: "ISO 3166-1 alpha-3 country code"
+    - field: portcalls_container
+      label: Port calls container
+      data_type: numeric
+      description: "Daily container-ship port calls"
+    - field: portcalls_dry_bulk
+      label: Port calls dry bulk
+      data_type: numeric
+      description: "Daily dry-bulk-carrier port calls"
+    - field: portcalls_general_cargo
+      label: Port calls general cargo
+      data_type: numeric
+      description: "Daily general-cargo-vessel port calls"
+    - field: portcalls_roro
+      label: Port calls roro
+      data_type: numeric
+      description: "Daily roll-on/roll-off vessel port calls"
+    - field: portcalls_tanker
+      label: Port calls tanker
+      data_type: numeric
+      description: "Daily tanker port calls"
+    - field: portcalls_cargo
+      label: Port calls cargo
+      data_type: numeric
+      description: "Daily port calls, all cargo vessels except tankers"
+    - field: portcalls
+      label: Port calls
+      data_type: numeric
+      description: "Daily port calls, all vessel types"
+    - field: import_container
+      label: Import container
+      data_type: numeric
+      description: "Estimated daily container-ship imports, metric tons"
+    - field: import_dry_bulk
+      label: Import dry bulk
+      data_type: numeric
+      description: "Estimated daily dry-bulk-carrier imports, metric tons"
+    - field: import_general_cargo
+      label: Import general cargo
+      data_type: numeric
+      description: "Estimated daily general-cargo imports, metric tons"
+    - field: import_roro
+      label: Import roro
+      data_type: numeric
+      description: "Estimated daily roro-vessel imports, metric tons"
+    - field: import_tanker
+      label: Import tanker
+      data_type: numeric
+      description: "Estimated daily tanker imports, metric tons"
+    - field: import_cargo
+      label: Import cargo
+      data_type: numeric
+      description: "Estimated daily imports, non-tanker cargo vessels, metric tons"
+    - field: import
+      label: Import
+      data_type: numeric
+      description: "Estimated daily imports, all vessels, metric tons"
+    - field: export_container
+      label: Export container
+      data_type: numeric
+      description: "Estimated daily container-ship exports, metric tons"
+    - field: export_dry_bulk
+      label: Export dry bulk
+      data_type: numeric
+      description: "Estimated daily dry-bulk-carrier exports, metric tons"
+    - field: export_general_cargo
+      label: Export general cargo
+      data_type: numeric
+      description: "Estimated daily general-cargo exports, metric tons"
+    - field: export_roro
+      label: Export roro
+      data_type: numeric
+      description: "Estimated daily roro-vessel exports, metric tons"
+    - field: export_tanker
+      label: Export tanker
+      data_type: numeric
+      description: "Estimated daily tanker exports, metric tons"
+    - field: export_cargo
+      label: Export cargo
+      data_type: numeric
+      description: "Estimated daily exports, non-tanker cargo vessels, metric tons"
+    - field: export
+      label: Export
+      data_type: numeric
+      description: "Estimated daily exports, all vessels, metric tons"
+  chokepoint_transits:
+    - field: date
+      label: Date
+      data_type: timestamp without time zone
+      description: "Date of observation"
+    - field: year
+      label: Year
+      data_type: numeric
+      description: "Calendar year of observation"
+    - field: month
+      label: Month
+      data_type: numeric
+      description: "Calendar month of observation"
+    - field: day
+      label: Day
+      data_type: numeric
+      description: "Day of month of observation"
+    - field: portid
+      label: Chokepoint ID
+      data_type: text
+      description: "Unique PortWatch chokepoint identifier"
+    - field: portname
+      label: Chokepoint name
+      data_type: text
+      description: "Chokepoint name"
+    - field: n_container
+      label: Transits container
+      data_type: numeric
+      description: "Daily container-ship transits"
+    - field: n_dry_bulk
+      label: Transits dry bulk
+      data_type: numeric
+      description: "Daily dry-bulk-carrier transits"
+    - field: n_general_cargo
+      label: Transits general cargo
+      data_type: numeric
+      description: "Daily general-cargo-vessel transits"
+    - field: n_roro
+      label: Transits roro
+      data_type: numeric
+      description: "Daily roro-vessel transits"
+    - field: n_tanker
+      label: Transits tanker
+      data_type: numeric
+      description: "Daily tanker transits"
+    - field: n_cargo
+      label: Transits cargo
+      data_type: numeric
+      description: "Daily transits, all cargo vessels except tankers"
+    - field: n_total
+      label: Transits
+      data_type: numeric
+      description: "Daily transits, all vessel types"
+    - field: capacity_container
+      label: Capacity container
+      data_type: numeric
+      description: "Estimated container-ship capacity, metric tons"
+    - field: capacity_dry_bulk
+      label: Capacity dry bulk
+      data_type: numeric
+      description: "Estimated dry-bulk-carrier capacity, metric tons"
+    - field: capacity_general_cargo
+      label: Capacity general cargo
+      data_type: numeric
+      description: "Estimated general-cargo capacity, metric tons"
+    - field: capacity_roro
+      label: Capacity roro
+      data_type: numeric
+      description: "Estimated roro-vessel capacity, metric tons"
+    - field: capacity_tanker
+      label: Capacity tanker
+      data_type: numeric
+      description: "Estimated tanker capacity, metric tons"
+    - field: capacity_cargo
+      label: Capacity cargo
+      data_type: numeric
+      description: "Estimated capacity, non-tanker cargo vessels, metric tons"
+    - field: capacity
+      label: Capacity
+      data_type: numeric
+      description: "Estimated capacity, all vessels, metric tons"
+  chokepoints:
+    - field: portid
+      label: Chokepoint ID
+      data_type: text
+      description: "Unique PortWatch chokepoint identifier"
+    - field: portname
+      label: Chokepoint name
+      data_type: text
+      description: "Chokepoint name"
+    - field: country
+      label: Country
+      data_type: text
+      description: "Country name, empty for chokepoints"
+    - field: ISO3
+      label: ISO3
+      data_type: text
+      description: "ISO3 country code, empty for chokepoints"
+    - field: continent
+      label: Continent
+      data_type: text
+      description: "Continent or region, empty for chokepoints"
+    - field: fullname
+      label: Full name
+      data_type: text
+      description: "Full chokepoint name"
+    - field: lat
+      label: Latitude
+      data_type: numeric
+      description: "Latitude coordinate (decimal degrees)"
+    - field: lon
+      label: Longitude
+      data_type: numeric
+      description: "Longitude coordinate (decimal degrees)"
+    - field: vessel_count_total
+      label: Vessel count
+      data_type: numeric
+      description: "Typical number of vessels transiting"
+    - field: vessel_count_container
+      label: Vessel count container
+      data_type: numeric
+      description: "Typical number of container ships transiting"
+    - field: vessel_count_dry_bulk
+      label: Vessel count dry bulk
+      data_type: numeric
+      description: "Typical number of dry-bulk carriers transiting"
+    - field: vessel_count_general_cargo
+      label: Vessel count general cargo
+      data_type: numeric
+      description: "Typical number of general-cargo vessels transiting"
+    - field: vessel_count_RoRo
+      label: Vessel count roro
+      data_type: numeric
+      description: "Typical number of roro vessels transiting"
+    - field: vessel_count_tanker
+      label: Vessel count tanker
+      data_type: numeric
+      description: "Typical number of tankers transiting"
+    - field: industry_top1
+      label: Top industry 1
+      data_type: text
+      description: "Industry with largest share of cargo transiting"
+    - field: industry_top2
+      label: Top industry 2
+      data_type: text
+      description: "Industry with 2nd-largest share of cargo transiting"
+    - field: industry_top3
+      label: Top industry 3
+      data_type: text
+      description: "Industry with 3rd-largest share of cargo transiting"
+    - field: share_country_maritime_import
+      label: Share of country maritime imports
+      data_type: text
+      description: "Country's maritime import share, empty for chokepoints"
+    - field: share_country_maritime_export
+      label: Share of country maritime exports
+      data_type: text
+      description: "Country's maritime export share, empty for chokepoints"
+    - field: LOCODE
+      label: UN/LOCODE
+      data_type: text
+      description: "UN/LOCODE, empty for chokepoints"
+    - field: pageid
+      label: Page ID
+      data_type: text
+      description: "PortWatch chokepoint profile page ID"
+    - field: countrynoaccents
+      label: Country without accents
+      data_type: text
+      description: "Unaccented country name, empty for chokepoints"
+  ports:
+    - field: portid
+      label: Port ID
+      data_type: text
+      description: "Unique PortWatch port identifier"
+    - field: portname
+      label: Port name
+      data_type: text
+      description: "Port name"
+    - field: country
+      label: Country
+      data_type: text
+      description: "Country name"
+    - field: ISO3
+      label: ISO3
+      data_type: text
+      description: "ISO 3166-1 alpha-3 country code"
+    - field: continent
+      label: Continent
+      data_type: text
+      description: "Continent or region, e.g. Asia & Pacific"
+    - field: fullname
+      label: Full name
+      data_type: text
+      description: "Port name and country, e.g. Tsuruga, Japan"
+    - field: lat
+      label: Latitude
+      data_type: numeric
+      description: "Latitude coordinate (decimal degrees)"
+    - field: lon
+      label: Longitude
+      data_type: numeric
+      description: "Longitude coordinate (decimal degrees)"
+    - field: vessel_count_total
+      label: Vessel count
+      data_type: numeric
+      description: "Typical number of vessels calling"
+    - field: vessel_count_container
+      label: Vessel count container
+      data_type: numeric
+      description: "Typical number of container ships calling"
+    - field: vessel_count_dry_bulk
+      label: Vessel count dry bulk
+      data_type: numeric
+      description: "Typical number of dry-bulk carriers calling"
+    - field: vessel_count_general_cargo
+      label: Vessel count general cargo
+      data_type: numeric
+      description: "Typical number of general-cargo vessels calling"
+    - field: vessel_count_RoRo
+      label: Vessel count roro
+      data_type: numeric
+      description: "Typical number of roro vessels calling"
+    - field: vessel_count_tanker
+      label: Vessel count tanker
+      data_type: numeric
+      description: "Typical number of tankers calling"
+    - field: industry_top1
+      label: Top industry 1
+      data_type: text
+      description: "Industry with largest share of cargo handled"
+    - field: industry_top2
+      label: Top industry 2
+      data_type: text
+      description: "Industry with 2nd-largest share of cargo handled"
+    - field: industry_top3
+      label: Top industry 3
+      data_type: text
+      description: "Industry with 3rd-largest share of cargo handled"
+    - field: share_country_maritime_import
+      label: Share of country maritime imports
+      data_type: numeric
+      description: "% of country's maritime imports handled by port"
+    - field: share_country_maritime_export
+      label: Share of country maritime exports
+      data_type: numeric
+      description: "% of country's maritime exports handled by port"
+    - field: LOCODE
+      label: UN/LOCODE
+      data_type: text
+      description: "UN/LOCODE of port location"
+    - field: pageid
+      label: Page ID
+      data_type: text
+      description: "PortWatch port profile page ID"
+    - field: countrynoaccents
+      label: Country without accents
+      data_type: text
+      description: "Country name without special characters"
+  disruptions:
+    - field: eventid
+      label: Event ID
+      data_type: numeric
+      description: "Unique disruption event identifier"
+    - field: eventtype
+      label: Event type
+      data_type: text
+      description: "Event type: EQ, WF, TC, FL, VO, DR (GDACS) or OT (other)"
+    - field: eventname
+      label: Event name
+      data_type: text
+      description: "Short event name"
+    - field: htmlname
+      label: Event title
+      data_type: text
+      description: "Descriptive event name"
+    - field: htmldescription
+      label: Event description
+      data_type: text
+      description: "Event description"
+    - field: alertlevel
+      label: Alert level
+      data_type: text
+      description: "GDACS alert level: GREEN, ORANGE or RED"
+    - field: country
+      label: Country
+      data_type: text
+      description: "Country names, semicolon-separated"
+    - field: fromdate
+      label: Start date
+      data_type: timestamp without time zone
+      description: "Event start date"
+    - field: year
+      label: Year
+      data_type: numeric
+      description: "Calendar year of observation"
+    - field: todate
+      label: End date
+      data_type: timestamp without time zone
+      description: "Event end date"
+    - field: severitytext
+      label: Severity
+      data_type: text
+      description: "Detailed description of event severity"
+    - field: lat
+      label: Latitude
+      data_type: numeric
+      description: "Latitude of event polygon centroid (decimal degrees)"
+    - field: long
+      label: Longitude
+      data_type: numeric
+      description: "Longitude of event polygon centroid (decimal degrees)"
+    - field: editdate
+      label: Edit date
+      data_type: numeric
+      description: "Date added to PortWatch database, Unix epoch ms"
+    - field: affectedports
+      label: Affected ports
+      data_type: text
+      description: "PortWatch IDs of affected ports, semicolon-separated"
+    - field: n_affectedports
+      label: Number of affected ports
+      data_type: numeric
+      description: "Number of PortWatch ports affected"
+    - field: affectedpopulation
+      label: Affected population
+      data_type: text
+      description: "Estimated number of people affected"
+    - field: pageid
+      label: Page ID
+      data_type: text
+      description: "PortWatch event profile page ID"
+    - field: Shape__Area
+      label: Shape area
+      data_type: numeric
+      description: "Event polygon area, sq m in Web Mercator (EPSG:3857)"
+    - field: Shape__Length
+      label: Shape length
+      data_type: numeric
+      description: "Event polygon perimeter, m in Web Mercator (EPSG:3857)"

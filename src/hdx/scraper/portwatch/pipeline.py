@@ -109,12 +109,15 @@ class Pipeline:
         }
 
         headers = list(ports_rows[0].keys())
-        dataset.generate_resource(
+        _, results = dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
             rows=ports_rows,
             resourcedata=csv_resource_data,
             headers=headers,
+        )
+        results["resource"].set_hdx_data_dictionary(
+            self._configuration["data_dictionaries"]["ports"]
         )
 
         # Create geojson resource
@@ -233,12 +236,15 @@ class Pipeline:
         }
 
         headers = list(chokepoints_rows[0].keys())
-        dataset.generate_resource(
+        _, results = dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
             rows=chokepoints_rows,
             resourcedata=csv_resource_data,
             headers=headers,
+        )
+        results["resource"].set_hdx_data_dictionary(
+            self._configuration["data_dictionaries"]["chokepoints"]
         )
 
         # Create geojson resource
@@ -341,12 +347,15 @@ class Pipeline:
         }
 
         headers = list(daily_chokepoints_rows[0].keys())
-        dataset.generate_resource(
+        _, results = dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
             rows=daily_chokepoints_rows,
             resourcedata=csv_resource_data,
             headers=headers,
+        )
+        results["resource"].set_hdx_data_dictionary(
+            self._configuration["data_dictionaries"]["chokepoint_transits"]
         )
 
         return dataset
@@ -460,12 +469,15 @@ class Pipeline:
             ),
         }
         headers = list(data_by_country[0].keys())
-        dataset.generate_resource(
+        _, results = dataset.generate_resource(
             folder=self._tempdir,
             filename=resource_name,
             rows=data_by_country,
             resourcedata=resource_data,
             headers=headers,
+        )
+        results["resource"].set_hdx_data_dictionary(
+            self._configuration["data_dictionaries"]["port_activity"]
         )
 
         return dataset
@@ -573,12 +585,15 @@ class Pipeline:
         }
 
         headers = list(disruptions_rows[0].keys())
-        dataset.generate_resource(
+        _, results = dataset.generate_resource(
             folder=self._tempdir,
             filename=csv_filename,
             rows=disruptions_rows,
             resourcedata=csv_resource_data,
             headers=headers,
+        )
+        results["resource"].set_hdx_data_dictionary(
+            self._configuration["data_dictionaries"]["disruptions"]
         )
 
         # Create geojson resource
