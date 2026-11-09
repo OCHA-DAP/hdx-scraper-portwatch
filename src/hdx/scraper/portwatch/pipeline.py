@@ -13,6 +13,7 @@ from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.resource import Resource
 from hdx.location.country import Country
+from hdx.utilities.base_downloader import DownloadError
 from hdx.utilities.retriever import Retrieve
 from slugify import slugify
 
@@ -143,15 +144,16 @@ class Pipeline:
 
         return dataset
 
-    def get_port_countries(self, features) -> List:
-        iso3_set = set()
+    def get_country_ports(self, features) -> Dict:
+        country_ports = {}
 
         for feature in features:
             iso3 = feature.get("ISO3")
-            if iso3:
-                iso3_set.add(iso3)
+            portid = feature.get("portid")
+            if iso3 and portid:
+                country_ports.setdefault(iso3, []).append(portid)
 
-        return sorted(iso3_set)
+        return country_ports
 
     def get_chokepoints(self) -> Tuple:
         base_url = f"{self._configuration['base_url']}/PortWatch_chokepoints_database/FeatureServer/0/query"
@@ -360,60 +362,62 @@ class Pipeline:
 
         return dataset
 
-    def get_daily_ports(self, iso3: str, year: Optional[int] = None) -> List:
+    def _download_with_retry(self, url: str, params: Dict, filename: str) -> Dict:
+        attempts = 8
+        for attempt in range(1, attempts + 1):
+            try:
+                data = self._retriever.download_json(
+                    url, parameters=params, filename=filename
+                )
+                error = data.get("error")
+                if not error:
+                    return data
+                error = f"{error.get('code')} {error.get('message')}"
+            except DownloadError as e:
+                error = str(e)
+            if attempt == attempts:
+                raise ValueError(error)
+            logger.warning(
+                f"Attempt {attempt}/{attempts} failed for {filename}: {error}. Retrying..."
+            )
+            time.sleep(min(5 * attempt, 30))
+
+    def get_daily_ports(self, portids: List) -> List:
+        # The Daily_Ports_Data table is only indexed on ObjectId and portid:
+        # filtering on any other field (e.g. ISO3) times out server-side
         base_url = (
             f"{self._configuration['base_url']}/Daily_Ports_Data/FeatureServer/0/query"
         )
         all_data = []
         limit = 1000
 
-        where_base = f"ISO3='{iso3}'"
-        if year is not None:
-            where_base += f" AND year={year}"
+        for portid in portids:
+            last_objectid = None
+            while True:
+                where = f"portid='{portid}'"
+                if last_objectid is not None:
+                    where += f" AND OBJECTID>{last_objectid}"
+                params = {
+                    "where": where,
+                    "outFields": "*",
+                    "returnGeometry": False,
+                    "f": "json",
+                    "orderByFields": "OBJECTID",
+                    "resultRecordCount": limit,
+                }
+                filename = f"daily_ports_{portid}_{last_objectid or 0}.json"
+                data = self._download_with_retry(base_url, params, filename)
 
-        last_objectid = None
-        while True:
-            where = where_base
-            if last_objectid is not None:
-                where += f" AND OBJECTID>{last_objectid}"
-            params = {
-                "where": where,
-                "outFields": "*",
-                "returnGeometry": False,
-                "f": "json",
-                "orderByFields": "OBJECTID",
-                "resultRecordCount": limit,
-            }
-            filename = f"daily_ports_{iso3}_{year or 'all'}_{last_objectid or 0}.json"
-            error = None
-            for attempt in range(3):
-                data = self._retriever.download_json(
-                    base_url,
-                    parameters=params,
-                    filename=filename,
-                )
-                error = data.get("error")
-                if not error:
+                features = data.get("features", [])
+                if not features:
                     break
-                if attempt < 2:
-                    logger.warning(
-                        f"Attempt {attempt + 1}/3 failed for {filename}: {error.get('message')}. Retrying..."
-                    )
-                    time.sleep(2 * (attempt + 1))
+                for feature in features:
+                    attrs = feature.get("attributes", {})
+                    all_data.append(attrs)
+                last_objectid = features[-1]["attributes"]["ObjectId"]
 
-            if error:
-                raise ValueError(f"{error.get('code')} {error.get('message')}")
-
-            features = data.get("features", [])
-            if not features:
-                break
-            for feature in features:
-                attrs = feature.get("attributes", {})
-                all_data.append(attrs)
-            last_objectid = features[-1]["attributes"]["ObjectId"]
-
-            if len(features) < limit:
-                break
+                if len(features) < limit:
+                    break
 
         for row in all_data:
             row["date"] = self.parse_date(row.pop("date_", row.get("date")))
